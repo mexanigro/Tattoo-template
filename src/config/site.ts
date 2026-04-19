@@ -6,6 +6,8 @@ export const siteConfig: SiteConfig = {
     name: "ONYX & STEEL",
     tagline: "The Modern Gentleman's Sanctuary",
     logoIconName: "Scissors",
+    aiPersona:
+      "Eres un asistente virtual experto. Tu objetivo es ayudar a los clientes, responder sus dudas de forma breve y recomendar nuestros servicios.",
   },
   features: {
     showWhyChooseUs: false,
@@ -79,7 +81,7 @@ export const siteConfig: SiteConfig = {
       price: 40,
     },
   ],
-  barbers: [
+  staff: [
     {
       id: "alex",
       name: "Alex 'The Blade' Reed",
@@ -163,7 +165,7 @@ export const siteConfig: SiteConfig = {
   gallery: [
     "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&q=80&w=1200", // Shop Interior Atmosphere
     "https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&q=80&w=1200", // Close up fade detail
-    "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=1200", // Barber at work
+    "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=1200", // Staff at work
     "https://images.unsplash.com/photo-1512690196236-724d90957dc3?auto=format&fit=crop&q=80&w=1200", // Traditional tools
     "https://images.unsplash.com/photo-1593702295094-172f3e098808?auto=format&fit=crop&q=80&w=1200", // Bearded client detail
     "https://images.unsplash.com/photo-1634449571010-02389ed0f9b0?auto=format&fit=crop&q=80&w=1200", // Modern style cut
@@ -209,7 +211,7 @@ export const siteConfig: SiteConfig = {
         {
           iconName: "Award",
           title: "Master Craft",
-          desc: "Our barbers go through rigorous training and certifications to handle all hair types and styles.",
+          desc: "Our staff go through rigorous training and certifications to handle all client needs and styles.",
         },
         {
           iconName: "Zap",
@@ -240,7 +242,7 @@ export const siteConfig: SiteConfig = {
       tagline: "The Modern Gentleman's Sanctuary Experience",
       steps: {
         service: "Service",
-        barber: "Barber",
+        staff: "Staff",
         datetime: "Time",
         details: "Confirm",
         payment: "Payment"

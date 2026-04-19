@@ -39,10 +39,10 @@ export function QuickInquiry() {
   };
 
   return (
-    <section id="contact" className="py-24 bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300 px-6">
+    <section id="contact" className="py-24 bg-zinc-50 dark:bg-surface-dark transition-colors duration-300 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="max-w-3xl mx-auto text-center mb-16">
-          <h2 className="text-amber-500 font-bold uppercase tracking-[0.3em] text-xs mb-4">{sectionConfig.title}</h2>
+          <h2 className="text-accent-light font-bold uppercase tracking-[0.3em] text-xs mb-4">{sectionConfig.title}</h2>
           <h3 className="text-4xl md:text-5xl font-black text-zinc-950 dark:text-white uppercase tracking-tighter mb-6">{sectionConfig.subtitle}</h3>
           <p className="text-zinc-500 dark:text-zinc-400 transition-colors duration-300">{sectionConfig.description}</p>
         </div>
@@ -56,7 +56,7 @@ export function QuickInquiry() {
                 placeholder="Full Name"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full bg-white dark:bg-zinc-900 transition-colors duration-300 border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 p-4 rounded-2xl outline-none focus:border-amber-500 text-zinc-950 dark:text-white transition-all"
+                className="w-full bg-white dark:bg-zinc-900 transition-colors duration-300 border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 p-4 rounded-2xl outline-none focus:border-accent-light text-zinc-950 dark:text-white transition-all"
               />
               <input
                 required
@@ -64,7 +64,7 @@ export function QuickInquiry() {
                 placeholder="Email Address"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full bg-white dark:bg-zinc-900 transition-colors duration-300 border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 p-4 rounded-2xl outline-none focus:border-amber-500 text-zinc-950 dark:text-white transition-all"
+                className="w-full bg-white dark:bg-zinc-900 transition-colors duration-300 border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 p-4 rounded-2xl outline-none focus:border-accent-light text-zinc-950 dark:text-white transition-all"
               />
             </div>
             <input
@@ -72,7 +72,7 @@ export function QuickInquiry() {
               placeholder="Subject (Optional)"
               value={formData.subject}
               onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-              className="w-full bg-white dark:bg-zinc-900 transition-colors duration-300 border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 p-4 rounded-2xl outline-none focus:border-amber-500 text-zinc-950 dark:text-white transition-all"
+              className="w-full bg-white dark:bg-zinc-900 transition-colors duration-300 border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 p-4 rounded-2xl outline-none focus:border-accent-light text-zinc-950 dark:text-white transition-all"
             />
             <textarea
               required
@@ -80,13 +80,13 @@ export function QuickInquiry() {
               placeholder="Your Message"
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-              className="w-full bg-white dark:bg-zinc-900 transition-colors duration-300 border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 p-4 rounded-2xl outline-none focus:border-amber-500 text-zinc-950 dark:text-white transition-all resize-none"
+              className="w-full bg-white dark:bg-zinc-900 transition-colors duration-300 border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 p-4 rounded-2xl outline-none focus:border-accent-light text-zinc-950 dark:text-white transition-all resize-none"
             />
 
             <button
               disabled={status === "submitting"}
               type="submit"
-              className="w-full bg-amber-600 hover:bg-amber-500 disabled:bg-zinc-100 dark:disabled:bg-zinc-800 disabled:text-zinc-500 dark:disabled:text-zinc-400 p-5 rounded-2xl font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 text-white"
+              className="w-full bg-accent hover:bg-accent-light disabled:bg-zinc-100 dark:disabled:bg-zinc-800 disabled:text-zinc-500 dark:disabled:text-zinc-400 p-5 rounded-2xl font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 text-white"
             >
               {status === "submitting" ? (
                 <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />

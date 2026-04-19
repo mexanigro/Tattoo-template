@@ -96,7 +96,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen selection:bg-amber-500 selection:text-zinc-950 font-sans transition-colors duration-300">
+    <div className="min-h-screen selection:bg-accent-light selection:text-zinc-950 font-sans transition-colors duration-300">
       <Navbar onBookClick={handleBookNow} onPageChange={setPage} currentPage={page} />
       
       <main>

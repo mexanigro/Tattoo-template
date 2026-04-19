@@ -12,12 +12,12 @@ export const aiService = {
   /**
    * Analyze schedule and appointments for strategic optimizations (server-side AI).
    */
-  async analyzeStrategicOps(appointments: unknown[], barbers: unknown[], services: unknown[]) {
+  async analyzeStrategicOps(appointments: unknown[], staff: unknown[], services: unknown[]) {
     try {
       const { response, data } = await postJson("/api/ai/analyze", {
         type: "strategic",
         appointments,
-        barbers,
+        staff,
         services,
       });
       if (!response.ok) {

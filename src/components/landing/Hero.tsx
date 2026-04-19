@@ -10,11 +10,11 @@ export function Hero({ onBookClick }: { onBookClick: () => void }) {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-zinc-50 dark:from-black/80 dark:via-black/60 dark:to-zinc-950 z-10 transition-colors duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-zinc-50 dark:from-black/80 dark:via-black/60 dark:to-surface-dark z-10 transition-colors duration-300" />
         <img
           src={hero.backgroundImage}
           className="w-full h-full object-cover scale-105"
-          alt="Barbershop Atmosphere"
+          alt="Salon atmosphere"
           loading="lazy"
           referrerPolicy="no-referrer"
         />
@@ -27,7 +27,7 @@ export function Hero({ onBookClick }: { onBookClick: () => void }) {
           transition={{ duration: 0.8 }}
           className="inline-flex items-center gap-2 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 mb-8"
         >
-          <Star className="text-amber-500" size={16} fill="currentColor" />
+          <Star className="text-accent-light" size={16} fill="currentColor" />
           <span className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-300 transition-colors duration-300">
             {siteConfig.brand.tagline}
           </span>
@@ -39,7 +39,7 @@ export function Hero({ onBookClick }: { onBookClick: () => void }) {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-6xl md:text-9xl font-black mb-8 tracking-tighter leading-[0.9] text-zinc-950 dark:text-white"
         >
-          {hero.titlePrefix} <span className="text-amber-500">{hero.titleHighlight}</span><br />
+          {hero.titlePrefix} <span className="text-accent-light">{hero.titleHighlight}</span><br />
           {hero.titleSuffix}
         </motion.h1>
 
@@ -61,7 +61,7 @@ export function Hero({ onBookClick }: { onBookClick: () => void }) {
           {siteConfig.features.showBooking && (
             <button
               onClick={onBookClick}
-              className="w-full sm:w-auto flex items-center justify-center gap-3 bg-white text-zinc-950 hover:bg-amber-500 px-10 py-5 rounded-full text-lg font-black transition-all group"
+              className="w-full sm:w-auto flex items-center justify-center gap-3 bg-white text-zinc-950 hover:bg-accent-light px-10 py-5 rounded-full text-lg font-black transition-all group"
             >
               <Calendar size={22} />
               <span>{hero.ctaPrimary}</span>
@@ -81,7 +81,7 @@ export function Hero({ onBookClick }: { onBookClick: () => void }) {
 
       {/* Decorative Elements */}
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce opacity-40">
-        <div className="w-1 h-12 rounded-full bg-gradient-to-b from-amber-500 to-transparent" />
+        <div className="w-1 h-12 rounded-full bg-gradient-to-b from-accent-light to-transparent" />
       </div>
     </section>
   );

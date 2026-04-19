@@ -76,16 +76,16 @@ const getResend = () => {
 
 function buildStrategicAnalysisPrompt(
   appointments: unknown[],
-  barbers: { name?: string }[],
+  staff: { name?: string }[],
   services: { name?: string }[],
 ): string {
   return `
-      You are the "Strategic AI Advisor" for a top-tier barbershop called "Sector Missions".
+      You are the "Strategic AI Advisor" for a premium service business called "Sector Missions".
       Your goal is to analyze the current appointment data and provide 3-4 highly tactical, actionable insights for the business owner.
       
       DATA:
       - Total Appointments: ${appointments.length}
-      - Personnel (Barbers): ${barbers.map((b) => b.name).join(", ")}
+      - Personnel (Staff): ${staff.map((s) => s.name).join(", ")}
       - Services: ${services.map((s) => s.name).join(", ")}
       
       RECENT APPOINTMENTS:
@@ -112,7 +112,7 @@ function buildStrategicAnalysisPrompt(
 function buildStyleConsultationPrompt(userDescription: string, services: { name?: string; description?: string }[]): string {
   const safeQuote = JSON.stringify(userDescription ?? "");
   return `
-      You are a world-class Barber & Style Consultant.
+      You are a world-class Style & Services Consultant.
       A customer is describing what they want: ${safeQuote}
       
       Our services: ${services.map((s) => `${s.name} (${s.description})`).join(" | ")}
@@ -157,7 +157,7 @@ const sendNotification = async (subject: string, data: any, type: 'booking' | 'c
         <h2 style="color: #f59e0b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 24px;">New Booking Request</h2>
         <div style="background: #f9fafb; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
           <p><strong>Appointment ID:</strong> ${data.appointmentId || 'N/A'}</p>
-          <p><strong>Barber:</strong> ${data.details?.barber || 'N/A'}</p>
+          <p><strong>Staff:</strong> ${data.details?.staff || 'N/A'}</p>
           <p><strong>Service:</strong> ${data.details?.service || 'N/A'}</p>
           <p><strong>Date:</strong> ${data.details?.date || 'N/A'}</p>
           <p><strong>Time:</strong> ${data.details?.time || 'N/A'}</p>
@@ -290,14 +290,14 @@ async function startServer() {
 
     try {
       if (kind === "strategic") {
-        const { appointments, barbers, services } = body;
-        if (!Array.isArray(appointments) || !Array.isArray(barbers) || !Array.isArray(services)) {
+        const { appointments, staff, services } = body;
+        if (!Array.isArray(appointments) || !Array.isArray(staff) || !Array.isArray(services)) {
           return res.status(400).json({
-            error: "For type \"strategic\", appointments, barbers, and services must be arrays.",
+            error: "For type \"strategic\", appointments, staff, and services must be arrays.",
           });
         }
 
-        const prompt = buildStrategicAnalysisPrompt(appointments, barbers, services);
+        const prompt = buildStrategicAnalysisPrompt(appointments, staff, services);
         const text = await geminiGenerateContent(apiKey, {
           contents: [{ role: "user", parts: [{ text: prompt }] }],
           responseMimeType: "application/json",
@@ -377,14 +377,21 @@ async function startServer() {
       contents.push({ role: m.role, parts: [{ text: m.text }] });
     }
 
-    const instruction =
-      brand && typeof brand.name === "string" && typeof brand.tagline === "string"
-        ? `You are the AI Consulting Agent for ${brand.name}, a premium barber shop.
+    const hasPersona =
+      brand &&
+      typeof brand === "object" &&
+      typeof (brand as { aiPersona?: unknown }).aiPersona === "string" &&
+      String((brand as { aiPersona: string }).aiPersona).trim().length > 0;
+
+    const instruction = hasPersona
+      ? String((brand as { aiPersona: string }).aiPersona).trim()
+      : brand && typeof brand.name === "string" && typeof brand.tagline === "string"
+        ? `You are the AI Consulting Agent for ${brand.name}.
 Tagline: ${brand.tagline}
-Your job is to assist clients by providing information about our services, hours, location, and offering styling advice.
+Your job is to assist clients by providing information about our services, hours, location, and offering helpful advice.
 Be sharp, professional, yet welcoming. Keep answers concise. Avoid complex formatting when possible.`
-        : `You are the AI Consulting Agent for a premium barber shop.
-Assist clients with services, hours, location, and styling advice.
+        : `You are the AI Consulting Agent for this business.
+Assist clients with services, hours, location, and general inquiries.
 Be sharp, professional, yet welcoming. Keep answers concise.`;
 
     try {

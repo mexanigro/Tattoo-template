@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Scissors, Calendar, Users, Briefcase, ChevronRight, X, Clock, MapPin, CheckCircle, Ban, Mail, Phone, CreditCard, AlertCircle } from "lucide-react";
-import { Appointment, AppointmentStatus, Barber } from "../../types";
+import { Appointment, AppointmentStatus, StaffMember } from "../../types";
 import { format, isSameDay, parse } from "date-fns";
 import { cn } from "../../lib/utils";
 import { dbService } from "../../services/db";
@@ -16,9 +16,9 @@ import { ThemeToggle } from "../theme/ThemeToggle";
 
 export function AdminDashboard({ onExit }: { onExit: () => void }) {
   const { services: SERVICES, brand } = siteConfig;
-  const [barbersList, setBarbersList] = React.useState<Barber[]>(siteConfig.barbers);
+  const [staffList, setStaffList] = React.useState<StaffMember[]>(siteConfig.staff);
   const [filterDate, setFilterDate] = React.useState(new Date());
-  const [filterBarber, setFilterBarber] = React.useState<string>("all");
+  const [filterStaff, setFilterStaff] = React.useState<string>("all");
   const [appointments, setAppointments] = React.useState<Appointment[]>([]);
   const [expandedId, setExpandedId] = React.useState<string | null>(null);
   const [user, setUser] = React.useState<FirebaseUser | null>(auth.currentUser);
@@ -36,7 +36,7 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
     let appUnsubscribe: (() => void) | undefined;
 
     // Load dynamic personnel registry
-    dbService.getBarbers().then(setBarbersList);
+    dbService.getStaff().then(setStaffList);
 
     const authUnsubscribe = onAuthStateChanged(auth, (u) => {
       setUser(u);
@@ -106,7 +106,7 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
   const runTacticalAnalysis = async () => {
     setIsAnalyzing(true);
     try {
-      const result = await aiService.analyzeStrategicOps(appointments, barbersList, SERVICES);
+      const result = await aiService.analyzeStrategicOps(appointments, staffList, SERVICES);
       setAiAnalysis(result);
     } catch (err) {
       console.error("AI Analysis failed:", err);
@@ -117,16 +117,16 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300 flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-zinc-50 dark:bg-surface-dark transition-colors duration-300 flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-accent-light border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!user || !isAuthorized) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300 flex flex-col items-center justify-center p-6 text-center">
-        <div className="w-20 h-20 bg-amber-500 rounded-2xl flex items-center justify-center mb-8 rotate-3 shadow-2xl shadow-amber-500/20">
+      <div className="min-h-screen bg-zinc-50 dark:bg-surface-dark transition-colors duration-300 flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-20 h-20 bg-accent-light rounded-2xl flex items-center justify-center mb-8 rotate-3 shadow-2xl shadow-accent-light/20">
           <Scissors className="text-zinc-950" size={40} />
         </div>
         
@@ -144,14 +144,14 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
               >
                 Switch Identity
               </button>
-              <button onClick={onExit} className="text-zinc-500 text-[9px] font-black uppercase tracking-[0.3em] hover:text-amber-500 transition-colors">
+              <button onClick={onExit} className="text-zinc-500 text-[9px] font-black uppercase tracking-[0.3em] hover:text-accent-light transition-colors">
                 ABORT_MISSION_EXIT
               </button>
             </div>
           </div>
         ) : (
           <>
-            <h2 className="text-3xl font-black uppercase tracking-tighter text-zinc-950 dark:text-white mb-2">Terminal <span className="text-amber-500">Access</span></h2>
+            <h2 className="text-3xl font-black uppercase tracking-tighter text-zinc-950 dark:text-white mb-2">Terminal <span className="text-accent-light">Access</span></h2>
             <div className="flex items-center gap-2 mb-8 justify-center">
                <div className="w-1 h-1 rounded-full bg-zinc-700" />
                <p className="text-zinc-500 text-[9px] uppercase tracking-[0.4em] font-black">Authorized Personnel Only</p>
@@ -160,9 +160,9 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
             
             <button 
               onClick={handleLogin}
-              className="bg-white text-zinc-950 px-10 py-5 rounded-[20px] font-black uppercase tracking-widest hover:bg-amber-500 transition-all flex items-center gap-4 group shadow-2xl shadow-white/5 active:scale-95"
+              className="bg-white text-zinc-950 px-10 py-5 rounded-[20px] font-black uppercase tracking-widest hover:bg-accent-light transition-all flex items-center gap-4 group shadow-2xl shadow-white/5 active:scale-95"
             >
-              <div className="w-6 h-6 bg-zinc-100 rounded-lg flex items-center justify-center group-hover:bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300 transition-colors">
+              <div className="w-6 h-6 bg-zinc-100 rounded-lg flex items-center justify-center group-hover:bg-zinc-50 dark:bg-surface-dark transition-colors duration-300 transition-colors">
                  <img src="https://www.google.com/favicon.ico" className="w-3 h-3 grayscale group-hover:grayscale-0" alt="Google" />
               </div>
               <span className="text-[11px]">Secure Sign-in with Google</span>
@@ -180,10 +180,10 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
   const filteredAppointments = React.useMemo(() => {
     return appointments.filter((app) => {
       const dateMatch = app.date === format(filterDate, "yyyy-MM-dd");
-      const barberMatch = filterBarber === "all" || app.barberId === filterBarber;
-      return dateMatch && barberMatch;
+      const staffMatch = filterStaff === "all" || app.staffId === filterStaff;
+      return dateMatch && staffMatch;
     });
-  }, [filterDate, filterBarber, appointments]);
+  }, [filterDate, filterStaff, appointments]);
 
   const stats = React.useMemo(() => {
     const today = appointments.filter(a => a.date === format(new Date(), "yyyy-MM-dd"));
@@ -204,15 +204,15 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300 text-zinc-950 dark:text-white p-6 md:p-12">
+    <div className="min-h-screen bg-zinc-50 dark:bg-surface-dark transition-colors duration-300 text-zinc-950 dark:text-white p-6 md:p-12">
       <div className="max-w-7xl mx-auto">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20 rotate-3">
+              <div className="w-10 h-10 bg-accent-light rounded-xl flex items-center justify-center shadow-lg shadow-accent-light/20 rotate-3">
                  <Scissors className="text-zinc-950" size={20} />
               </div>
-              <h1 className="text-3xl font-black uppercase tracking-tighter text-zinc-950 dark:text-white">Mission <span className="text-amber-500">Control</span></h1>
+              <h1 className="text-3xl font-black uppercase tracking-tighter text-zinc-950 dark:text-white">Mission <span className="text-accent-light">Control</span></h1>
             </div>
             <div className="flex items-center gap-3">
               <p className="text-zinc-500 dark:text-zinc-400 transition-colors duration-300 text-[10px] uppercase tracking-[0.3em] font-black">{brand.name} SYSTEMS</p>
@@ -228,7 +228,7 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
              </div>
              <button 
                onClick={onExit}
-               className="px-8 py-3 bg-white text-zinc-950 hover:bg-amber-500 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg hover:shadow-xl"
+               className="px-8 py-3 bg-white text-zinc-950 hover:bg-accent-light rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg hover:shadow-xl"
              >
                Relinquish Access
              </button>
@@ -240,7 +240,7 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
             onClick={() => setActiveTab('missions')}
             className={cn(
               "px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-3",
-              activeTab === 'missions' ? "bg-amber-500 text-zinc-950 shadow-lg shadow-amber-500/20" : "text-zinc-500 hover:text-zinc-600 dark:text-zinc-300 transition-colors duration-300"
+              activeTab === 'missions' ? "bg-accent-light text-zinc-950 shadow-lg shadow-accent-light/20" : "text-zinc-500 hover:text-zinc-600 dark:text-zinc-300 transition-colors duration-300"
             )}
           >
             <Calendar size={14} />
@@ -250,7 +250,7 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
             onClick={() => setActiveTab('personnel')}
             className={cn(
               "px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-3",
-              activeTab === 'personnel' ? "bg-amber-500 text-zinc-950 shadow-lg shadow-amber-500/20" : "text-zinc-500 hover:text-zinc-600 dark:text-zinc-300 transition-colors duration-300"
+              activeTab === 'personnel' ? "bg-accent-light text-zinc-950 shadow-lg shadow-accent-light/20" : "text-zinc-500 hover:text-zinc-600 dark:text-zinc-300 transition-colors duration-300"
             )}
           >
             <Users size={14} />
@@ -283,14 +283,14 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
                 </div>
               </div>
 
-              <div className="bg-amber-500/[0.03] p-6 rounded-[24px] border border-amber-500/10 backdrop-blur-sm relative overflow-hidden group">
+              <div className="bg-accent-light/[0.03] p-6 rounded-[24px] border border-accent-light/10 backdrop-blur-sm relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <Clock size={40} className="text-amber-500" />
+                  <Clock size={40} className="text-accent-light" />
                 </div>
-                <p className="text-amber-500/50 text-[9px] font-black uppercase tracking-[0.3em] mb-4">Pending Review</p>
+                <p className="text-accent-light/50 text-[9px] font-black uppercase tracking-[0.3em] mb-4">Pending Review</p>
                 <div className="flex items-baseline gap-2">
-                  <h4 className="text-4xl font-black text-amber-500 tracking-tighter">{stats.count - stats.confirmed}</h4>
-                  <p className="text-[10px] font-black text-amber-500/30 uppercase">Action Req.</p>
+                  <h4 className="text-4xl font-black text-accent-light tracking-tighter">{stats.count - stats.confirmed}</h4>
+                  <p className="text-[10px] font-black text-accent-light/30 uppercase">Action Req.</p>
                 </div>
               </div>
 
@@ -311,14 +311,14 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
                 <div className="bg-zinc-900/40 p-6 rounded-[28px] border border-zinc-800/50 space-y-6">
                   <div className="space-y-4">
                      <div className="flex items-center gap-2">
-                        <Calendar size={14} className="text-amber-500" />
+                        <Calendar size={14} className="text-accent-light" />
                         <h3 className="text-zinc-500 dark:text-zinc-400 transition-colors duration-300 font-black uppercase text-[9px] tracking-[0.3em]">Temporal Filter</h3>
                      </div>
                      <input 
                        type="date"
                        value={format(filterDate, "yyyy-MM-dd")}
                        onChange={(e) => setFilterDate(new Date(e.target.value))}
-                       className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-4 rounded-xl outline-none focus:border-amber-500/50 text-sm text-zinc-950 dark:text-white font-mono transition-all"
+                       className="w-full bg-zinc-50 dark:bg-surface-dark border border-zinc-200 dark:border-zinc-800 p-4 rounded-xl outline-none focus:border-accent-light/50 text-sm text-zinc-950 dark:text-white font-mono transition-all"
                      />
                   </div>
 
@@ -326,26 +326,26 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
 
                   <div className="space-y-4">
                      <div className="flex items-center gap-2">
-                        <Users size={14} className="text-amber-500" />
+                        <Users size={14} className="text-accent-light" />
                         <h3 className="text-zinc-500 dark:text-zinc-400 transition-colors duration-300 font-black uppercase text-[9px] tracking-[0.3em]">Specialist Assignment</h3>
                      </div>
                      <div className="grid gap-2">
                         <button 
-                          onClick={() => setFilterBarber("all")}
+                          onClick={() => setFilterStaff("all")}
                           className={cn(
                             "px-5 py-4 rounded-xl border text-[10px] font-black uppercase tracking-widest text-left transition-all",
-                            filterBarber === "all" ? "bg-amber-500 border-amber-500 text-zinc-950 shadow-lg shadow-amber-500/10" : "bg-zinc-50 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:text-zinc-600 dark:text-zinc-300 transition-colors duration-300"
+                            filterStaff === "all" ? "bg-accent-light border-accent-light text-zinc-950 shadow-lg shadow-accent-light/10" : "bg-zinc-50 dark:bg-surface-dark border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:text-zinc-600 dark:text-zinc-300 transition-colors duration-300"
                           )}
                         >
                           All Personnel
                         </button>
-                        {barbersList.map(b => (
+                        {staffList.map(b => (
                           <button 
                             key={b.id}
-                            onClick={() => setFilterBarber(b.id)}
+                            onClick={() => setFilterStaff(b.id)}
                             className={cn(
                               "px-5 py-4 rounded-xl border text-[10px] font-black uppercase tracking-widest text-left transition-all",
-                              filterBarber === b.id ? "bg-amber-500 border-amber-500 text-zinc-950 shadow-lg shadow-amber-500/10" : "bg-zinc-50 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:text-zinc-600 dark:text-zinc-300 transition-colors duration-300"
+                              filterStaff === b.id ? "bg-accent-light border-accent-light text-zinc-950 shadow-lg shadow-accent-light/10" : "bg-zinc-50 dark:bg-surface-dark border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:text-zinc-600 dark:text-zinc-300 transition-colors duration-300"
                             )}
                           >
                             {b.name.split("'")[0]}
@@ -374,8 +374,8 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                       <div className="space-y-1">
                          <div className="flex items-center gap-2 mb-2">
-                            <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                            <h3 className="text-amber-500 text-[10px] font-black uppercase tracking-[0.3em]">Sector Intelligence Core</h3>
+                            <div className="w-2 h-2 rounded-full bg-accent-light animate-pulse" />
+                            <h3 className="text-accent-light text-[10px] font-black uppercase tracking-[0.3em]">Sector Intelligence Core</h3>
                          </div>
                          <h2 className="text-2xl font-black uppercase tracking-tight text-zinc-950 dark:text-white">Tactical <span className="text-zinc-500">Analytics</span></h2>
                          <p className="text-zinc-500 dark:text-zinc-400 transition-colors duration-300 text-xs max-w-md">Gemini-powered operational oversight. Synchronize missions with neural strategy.</p>
@@ -384,11 +384,11 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
                       <button 
                          onClick={runTacticalAnalysis}
                          disabled={isAnalyzing}
-                         className="px-8 py-4 bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300 border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 rounded-2xl text-zinc-950 dark:text-white font-black uppercase tracking-widest text-[10px] flex items-center gap-3 hover:border-amber-500 transition-all shadow-2xl active:scale-95 disabled:opacity-50"
+                         className="px-8 py-4 bg-zinc-50 dark:bg-surface-dark transition-colors duration-300 border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 rounded-2xl text-zinc-950 dark:text-white font-black uppercase tracking-widest text-[10px] flex items-center gap-3 hover:border-accent-light transition-all shadow-2xl active:scale-95 disabled:opacity-50"
                       >
                          {isAnalyzing ? (
-                            <div className="w-4 h-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
-                         ) : <AlertCircle size={16} className="text-amber-500" />}
+                            <div className="w-4 h-4 border-2 border-accent-light border-t-transparent rounded-full animate-spin" />
+                         ) : <AlertCircle size={16} className="text-accent-light" />}
                          {isAnalyzing ? "Recalibrating..." : "Execute Intelligence Sync"}
                       </button>
                    </div>
@@ -399,32 +399,32 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
                         animate={{ opacity: 1, height: "auto" }}
                         className="mt-8 pt-8 border-t border-zinc-200 dark:border-zinc-800 transition-colors duration-300 grid grid-cols-1 md:grid-cols-3 gap-6"
                       >
-                         <div className="col-span-full bg-amber-500/5 p-4 rounded-xl border border-amber-500/10">
-                            <p className="text-[9px] font-black uppercase tracking-widest text-amber-500/60 mb-1">Neural Summary</p>
+                         <div className="col-span-full bg-accent-light/5 p-4 rounded-xl border border-accent-light/10">
+                            <p className="text-[9px] font-black uppercase tracking-widest text-accent-light/60 mb-1">Neural Summary</p>
                             <p className="text-zinc-200 text-sm italic">"{aiAnalysis.status}"</p>
                          </div>
                          
                          {aiAnalysis.insights?.map((ins: any, idx: number) => (
-                            <div key={idx} className="bg-zinc-950/50 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 space-y-2">
+                            <div key={idx} className="bg-surface-dark/50 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 space-y-2">
                                <div className="flex items-center justify-between">
                                   <h4 className="text-zinc-950 dark:text-white font-black uppercase text-[10px] tracking-widest">{ins.title}</h4>
                                   <span className={cn(
                                      "px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest",
                                      ins.impact === 'High' ? "bg-red-500/10 text-red-500" : 
-                                     ins.impact === 'Medium' ? "bg-amber-500/10 text-amber-500" : "bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300 text-zinc-500"
+                                     ins.impact === 'Medium' ? "bg-accent-light/10 text-accent-light" : "bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300 text-zinc-500"
                                   )}>{ins.impact} Impact</span>
                                </div>
                                <p className="text-zinc-500 dark:text-zinc-400 transition-colors duration-300 text-xs leading-relaxed">{ins.description}</p>
                             </div>
                          ))}
                          
-                         <div className="col-span-full md:col-span-1 bg-zinc-950/80 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 flex items-center justify-between">
+                         <div className="col-span-full md:col-span-1 bg-surface-dark/80 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 flex items-center justify-between">
                              <div className="space-y-1">
                                 <p className="text-zinc-500 text-[9px] font-black uppercase tracking-widest">Efficiency Rating</p>
                                 <p className="text-zinc-950 dark:text-white text-xl font-black">{aiAnalysis.tacticalMetric}%</p>
                              </div>
-                             <div className="w-12 h-12 rounded-full border-4 border-zinc-200 dark:border-zinc-800 transition-colors duration-300 border-t-amber-500 flex items-center justify-center">
-                                <span className="text-amber-500 text-[10px] font-black">AI</span>
+                             <div className="w-12 h-12 rounded-full border-4 border-zinc-200 dark:border-zinc-800 transition-colors duration-300 border-t-accent-light flex items-center justify-center">
+                                <span className="text-accent-light text-[10px] font-black">AI</span>
                              </div>
                          </div>
                       </motion.div>
@@ -440,8 +440,8 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
                             Real-time Queue Status
                          </p>
                       </div>
-                      <div className="bg-zinc-950/50 px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 flex items-center gap-3">
-                         <Calendar size={14} className="text-amber-500" />
+                      <div className="bg-surface-dark/50 px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 flex items-center gap-3">
+                         <Calendar size={14} className="text-accent-light" />
                          <span className="text-[10px] uppercase font-black tracking-widest text-zinc-600 dark:text-zinc-300 transition-colors duration-300">
                             {format(filterDate, "EEEE, MMMM do")}
                          </span>
@@ -450,7 +450,7 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
 
                    <div className="overflow-x-auto">
                       <table className="w-full text-left border-separate border-spacing-0">
-                         <thead className="bg-zinc-950/30 text-zinc-500 text-[9px] font-black uppercase tracking-[0.3em]">
+                         <thead className="bg-surface-dark/30 text-zinc-500 text-[9px] font-black uppercase tracking-[0.3em]">
                             <tr>
                                <th className="px-8 py-5 border-b border-zinc-800/50">Timestamp</th>
                                <th className="px-8 py-5 border-b border-zinc-800/50">Subject</th>
@@ -462,7 +462,7 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
                          </thead>
                          <tbody className="divide-y divide-zinc-800/30">
                             {filteredAppointments.length > 0 ? filteredAppointments.map(app => {
-                               const barber = barbersList.find(b => b.id === app.barberId);
+                               const staffMember = staffList.find(b => b.id === app.staffId);
                                const service = SERVICES.find(s => s.id === app.serviceId);
                                const isExpanded = expandedId === app.id;
 
@@ -472,15 +472,15 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
                                         onClick={() => setExpandedId(isExpanded ? null : app.id)}
                                         className={cn(
                                            "group hover:bg-white/[0.04] transition-all cursor-pointer border-l-2 border-transparent relative",
-                                           isExpanded && "bg-amber-500/[0.04] border-l-amber-500"
+                                           isExpanded && "bg-accent-light/[0.04] border-l-accent-light"
                                         )}
                                      >
                                         <td className="px-8 py-6">
-                                           <div className="font-mono text-sm font-bold text-amber-500 flex items-center gap-2">
+                                           <div className="font-mono text-sm font-bold text-accent-light flex items-center gap-2">
                                               <span className={cn(
                                                  "w-1.5 h-1.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.5)]",
                                                  app.status === 'confirmed' ? "bg-green-500" : 
-                                                 app.status === 'pending' ? "bg-amber-500 animate-pulse" :
+                                                 app.status === 'pending' ? "bg-accent-light animate-pulse" :
                                                  app.status === 'cancelled' ? "bg-red-500" :
                                                  app.status === 'completed' ? "bg-blue-500" :
                                                  "bg-zinc-600"
@@ -493,20 +493,20 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
                                            <div className="text-[9px] text-zinc-500 uppercase font-black tracking-widest mt-0.5">{app.customerPhone}</div>
                                         </td>
                                         <td className="px-8 py-6">
-                                           <div className="text-zinc-500 dark:text-zinc-400 transition-colors duration-300 text-[10px] font-black uppercase tracking-widest py-1 px-2.5 bg-zinc-950/50 rounded-md border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 inline-block shadow-inner">
+                                           <div className="text-zinc-500 dark:text-zinc-400 transition-colors duration-300 text-[10px] font-black uppercase tracking-widest py-1 px-2.5 bg-surface-dark/50 rounded-md border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 inline-block shadow-inner">
                                               {service?.name}
                                            </div>
                                         </td>
                                         <td className="px-8 py-6">
-                                           <div className="flex items-center gap-3 group/barber relative">
-                                              <div className="w-6 h-6 rounded-md bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300 border border-zinc-700 flex items-center justify-center text-[10px] font-black text-zinc-500 group-hover/barber:border-amber-500/50 transition-colors">
-                                                 {barber?.name.charAt(0)}
+                                           <div className="flex items-center gap-3 group/staff relative">
+                                              <div className="w-6 h-6 rounded-md bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300 border border-zinc-700 flex items-center justify-center text-[10px] font-black text-zinc-500 group-hover/staff:border-accent-light/50 transition-colors">
+                                                 {staffMember?.name.charAt(0)}
                                               </div>
-                                              <span className="text-zinc-500 dark:text-zinc-400 transition-colors duration-300 text-xs font-bold whitespace-nowrap">{barber?.name.split("'")[0]}</span>
+                                              <span className="text-zinc-500 dark:text-zinc-400 transition-colors duration-300 text-xs font-bold whitespace-nowrap">{staffMember?.name.split("'")[0]}</span>
                                               
                                               {/* Technical Tooltip */}
-                                              <div className="absolute left-0 -top-8 px-2 py-1 bg-white dark:bg-zinc-900 transition-colors duration-300 border border-amber-500/30 rounded text-[9px] font-black text-amber-500 uppercase tracking-widest opacity-0 scale-95 pointer-events-none group-hover/barber:opacity-100 group-hover/barber:scale-100 transition-all z-50 shadow-2xl backdrop-blur-md">
-                                                 {barber?.name} // ID_{barber?.id.toUpperCase()}
+                                              <div className="absolute left-0 -top-8 px-2 py-1 bg-white dark:bg-zinc-900 transition-colors duration-300 border border-accent-light/30 rounded text-[9px] font-black text-accent-light uppercase tracking-widest opacity-0 scale-95 pointer-events-none group-hover/staff:opacity-100 group-hover/staff:scale-100 transition-all z-50 shadow-2xl backdrop-blur-md">
+                                                 {staffMember?.name} // ID_{staffMember?.id.toUpperCase()}
                                               </div>
                                            </div>
                                         </td>
@@ -515,7 +515,7 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
                                                "px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-[0.2em] border shadow-sm",
                                                app.paymentStatus === 'paid' || app.paymentStatus === 'deposit_paid' ? "bg-green-500/5 text-green-500 border-green-500/20" :
                                                app.paymentStatus === 'failed' ? "bg-red-500/5 text-red-500 border-red-500/20" :
-                                               "bg-zinc-950/50 text-zinc-600 border-zinc-200 dark:border-zinc-800 transition-colors duration-300"
+                                               "bg-surface-dark/50 text-zinc-600 border-zinc-200 dark:border-zinc-800 transition-colors duration-300"
                                             )}>
                                                {app.paymentStatus?.replace('_', ' ') || 'UNPAID'}
                                             </span>
@@ -529,7 +529,7 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
                                                   "p-2.5 rounded-lg border transition-all shadow-lg active:scale-95",
                                                   app.status === 'confirmed' 
                                                    ? "bg-green-500/10 border-green-500/20 text-green-500" 
-                                                   : "bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300 border-zinc-200 dark:border-zinc-800 transition-colors duration-300 text-zinc-600 hover:text-green-500 hover:border-green-500/30"
+                                                   : "bg-zinc-50 dark:bg-surface-dark transition-colors duration-300 border-zinc-200 dark:border-zinc-800 transition-colors duration-300 text-zinc-600 hover:text-green-500 hover:border-green-500/30"
                                                 )}
                                                 title="Verify Presence"
                                               >
@@ -542,7 +542,7 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
                                                   "p-2.5 rounded-lg border transition-all shadow-lg active:scale-95",
                                                   app.status === 'cancelled' 
                                                    ? "bg-red-500/10 border-red-500/20 text-red-500" 
-                                                   : "bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300 border-zinc-200 dark:border-zinc-800 transition-colors duration-300 text-zinc-600 hover:text-red-500 hover:border-red-500/30"
+                                                   : "bg-zinc-50 dark:bg-surface-dark transition-colors duration-300 border-zinc-200 dark:border-zinc-800 transition-colors duration-300 text-zinc-600 hover:text-red-500 hover:border-red-500/30"
                                                 )}
                                                 title="Decommission Slot"
                                               >
@@ -561,18 +561,18 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
                                                     animate={{ height: 'auto', opacity: 1 }}
                                                     exit={{ height: 0, opacity: 0 }}
                                                     transition={{ duration: 0.3, ease: [0.04, 0.62, 0.23, 0.98] }}
-                                                    className="overflow-hidden bg-zinc-950/50 border border-t-0 border-zinc-800/50 -mx-8 px-8 py-8"
+                                                    className="overflow-hidden bg-surface-dark/50 border border-t-0 border-zinc-800/50 -mx-8 px-8 py-8"
                                                  >
                                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                                     <div className="space-y-4">
                                                        <h5 className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-600">Subject Identity</h5>
                                                        <div className="bg-zinc-900/50 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 space-y-3">
                                                           <div className="flex items-center gap-3">
-                                                             <div className="p-2 bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300 rounded-lg"><Mail size={14} className="text-amber-500/50" /></div>
+                                                             <div className="p-2 bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300 rounded-lg"><Mail size={14} className="text-accent-light/50" /></div>
                                                              <div className="text-xs font-bold text-zinc-600 dark:text-zinc-300 transition-colors duration-300">{app.customerEmail}</div>
                                                           </div>
                                                           <div className="flex items-center gap-3">
-                                                             <div className="p-2 bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300 rounded-lg"><Phone size={14} className="text-amber-500/50" /></div>
+                                                             <div className="p-2 bg-zinc-100 dark:bg-zinc-800 transition-colors duration-300 rounded-lg"><Phone size={14} className="text-accent-light/50" /></div>
                                                              <div className="text-xs font-bold text-zinc-600 dark:text-zinc-300 transition-colors duration-300">{app.customerPhone}</div>
                                                           </div>
                                                        </div>

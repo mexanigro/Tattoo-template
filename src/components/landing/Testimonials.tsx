@@ -8,10 +8,10 @@ export function Testimonials() {
   const { testimonials: sectionConfig } = sections;
 
   return (
-    <section className="py-24 bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300 px-6">
+    <section className="py-24 bg-zinc-50 dark:bg-surface-dark transition-colors duration-300 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20">
-          <h2 className="text-amber-500 font-bold uppercase tracking-[0.3em] text-xs mb-4">{sectionConfig.title}</h2>
+          <h2 className="text-accent-light font-bold uppercase tracking-[0.3em] text-xs mb-4">{sectionConfig.title}</h2>
           <h3 className="text-4xl md:text-5xl font-black text-zinc-950 dark:text-white uppercase tracking-tighter">{sectionConfig.subtitle}</h3>
         </div>
 
@@ -29,7 +29,7 @@ export function Testimonials() {
               
               <div className="flex gap-1 mb-6">
                 {[...Array(review.rating)].map((_, j) => (
-                  <Star key={j} className="text-amber-500" size={16} fill="currentColor" />
+                  <Star key={j} className="text-accent-light" size={16} fill="currentColor" />
                 ))}
               </div>
 

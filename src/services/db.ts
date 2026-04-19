@@ -16,7 +16,7 @@ import {
   getDoc
 } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
-import { Appointment, AppointmentStatus, Barber } from '../types';
+import { Appointment, AppointmentStatus, StaffMember } from '../types';
 import { siteConfig } from '../config/site';
 import { checkAvailability } from '../lib/booking';
 import { format, parse, setMinutes, setHours, startOfDay, addMinutes, isBefore, isAfter } from 'date-fns';
@@ -72,12 +72,15 @@ export const dbService = {
     );
     
     return onSnapshot(q, (snapshot) => {
-      const appointments = snapshot.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id,
-        // Convert Firestore timestamp to Date or handle it in component
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-      } as Appointment));
+      const appointments = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          ...data,
+          id: doc.id,
+          staffId: data.staffId ?? (data as { barberId?: string }).barberId ?? '',
+          createdAt: data.createdAt?.toDate() || new Date(),
+        } as Appointment;
+      });
       callback(appointments);
     }, (error) => {
       handleFirestoreError(error, OperationType.GET, APPOINTMENTS_COLLECTION);
@@ -88,11 +91,15 @@ export const dbService = {
     try {
       const q = query(collection(db, APPOINTMENTS_COLLECTION), orderBy('createdAt', 'desc'));
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id,
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-      } as Appointment));
+      return snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          ...data,
+          id: doc.id,
+          staffId: data.staffId ?? (data as { barberId?: string }).barberId ?? '',
+          createdAt: data.createdAt?.toDate() || new Date(),
+        } as Appointment;
+      });
     } catch (error) {
       handleFirestoreError(error, OperationType.LIST, APPOINTMENTS_COLLECTION);
       return [];
@@ -107,11 +114,15 @@ export const dbService = {
         where('status', '!=', 'cancelled')
       );
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id,
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-      } as Appointment));
+      return snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          ...data,
+          id: doc.id,
+          staffId: data.staffId ?? (data as { barberId?: string }).barberId ?? '',
+          createdAt: data.createdAt?.toDate() || new Date(),
+        } as Appointment;
+      });
     } catch (error) {
       handleFirestoreError(error, OperationType.LIST, APPOINTMENTS_COLLECTION);
       return [];
@@ -119,13 +130,13 @@ export const dbService = {
   },
 
   /**
-   * Merges static siteConfig.barbers with real-time Firestore overrides.
+   * Merges static siteConfig.staff with real-time Firestore overrides.
    * This ensures the scheduling logic always uses the most recent personnel parameters.
    */
-  getBarbers: async (): Promise<Barber[]> => {
+  getStaff: async (): Promise<StaffMember[]> => {
     try {
-      const overrides = await dbService.getBarberOverrides();
-      return siteConfig.barbers.map(b => {
+      const overrides = await dbService.getStaffOverrides();
+      return siteConfig.staff.map(b => {
         const override = overrides[b.id];
         if (!override) return b;
         return {
@@ -137,7 +148,7 @@ export const dbService = {
       });
     } catch (error) {
       console.error("Failed to synchronize personnel registry:", error);
-      return siteConfig.barbers;
+      return siteConfig.staff;
     }
   },
   
@@ -145,11 +156,11 @@ export const dbService = {
     try {
       return await runTransaction(db, async (transaction) => {
         const dateStr = appointment.date;
-        const barberId = appointment.barberId;
+        const staffId = appointment.staffId;
         
-        // 1. Fetch current appointments for this barber and date WITHIN THE TRANSACTION
+        // 1. Fetch current appointments for this staff member and date WITHIN THE TRANSACTION
         // Actually, since we can't query collections in transactions, we look at the daily manifest.
-        const manifestRef = doc(db, 'daily_manifests', `${barberId}_${dateStr}`);
+        const manifestRef = doc(db, 'daily_manifests', `${staffId}_${dateStr}`);
         const manifestSnap = await transaction.get(manifestRef);
         
         // Fetch existing appointments using the manifest's tracking IDs if possible or just use the current appointments for validation
@@ -157,17 +168,17 @@ export const dbService = {
         const occupiedIntervals: { start: string, end: string }[] = manifestSnap.exists() ? manifestSnap.data().intervals : [];
         
         // 2. Fetch the latest personnel config (including overrides)
-        const overrideRef = doc(db, 'barber_overrides', barberId);
+        const overrideRef = doc(db, 'staff_overrides', staffId);
         const overrideDoc = await transaction.get(overrideRef);
-        const staticBarber = siteConfig.barbers.find(b => b.id === barberId);
+        const staticStaff = siteConfig.staff.find(b => b.id === staffId);
         
-        if (!staticBarber) throw new Error("Personnel not found in static registry.");
+        if (!staticStaff) throw new Error("Personnel not found in static registry.");
         
-        const barber: Barber = !overrideDoc.exists() ? staticBarber : {
-          ...staticBarber,
-          schedule: overrideDoc.data().schedule || staticBarber.schedule,
-          blockedDates: overrideDoc.data().blockedDates || staticBarber.blockedDates || [],
-          blockedSlots: overrideDoc.data().blockedSlots || staticBarber.blockedSlots || [],
+        const staffMember: StaffMember = !overrideDoc.exists() ? staticStaff : {
+          ...staticStaff,
+          schedule: overrideDoc.data().schedule || staticStaff.schedule,
+          blockedDates: overrideDoc.data().blockedDates || staticStaff.blockedDates || [],
+          blockedSlots: overrideDoc.data().blockedSlots || staticStaff.blockedSlots || [],
         };
 
         // 3. Perform atomic cross-check validation
@@ -189,7 +200,7 @@ export const dbService = {
         }
 
         // Basic availability check (breaks, opening hours, etc)
-        const validation = checkAvailability(appointment, barber, []); // Pass empty existing since we checked manifestation already
+        const validation = checkAvailability(appointment, staffMember, []); // Pass empty existing since we checked manifestation already
         if (!validation.available) {
            throw new Error(validation.reason || "Slot no longer available.");
         }
@@ -213,9 +224,9 @@ export const dbService = {
     }
   },
 
-  getBarberOverrides: async (): Promise<Record<string, any>> => {
+  getStaffOverrides: async (): Promise<Record<string, any>> => {
     try {
-      const snapshot = await getDocs(collection(db, 'barber_overrides'));
+      const snapshot = await getDocs(collection(db, 'staff_overrides'));
       const overrides: Record<string, any> = {};
       snapshot.forEach(doc => {
         overrides[doc.id] = doc.data();
@@ -227,9 +238,9 @@ export const dbService = {
     }
   },
 
-  saveBarberOverride: async (barberId: string, data: any): Promise<void> => {
+  saveStaffOverride: async (staffId: string, data: any): Promise<void> => {
     try {
-      await setDoc(doc(db, 'barber_overrides', barberId), data, { merge: true });
+      await setDoc(doc(db, 'staff_overrides', staffId), data, { merge: true });
     } catch (error) {
       console.error("Failed to commit personnel override:", error);
       throw error;

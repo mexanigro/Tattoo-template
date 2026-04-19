@@ -41,12 +41,12 @@ service cloud.firestore {
     }
 
     function isValidAppointment(data) {
-      return data.keys().hasAll(['customerName', 'customerEmail', 'customerPhone', 'serviceId', 'barberId', 'date', 'time', 'duration', 'status', 'createdAt']) &&
+      return data.keys().hasAll(['customerName', 'customerEmail', 'customerPhone', 'serviceId', 'staffId', 'date', 'time', 'duration', 'status', 'createdAt']) &&
              data.customerName is string && data.customerName.size() >= 1 && data.customerName.size() <= 100 &&
              isValidEmail(data.customerEmail) &&
              data.customerPhone is string && data.customerPhone.size() >= 5 && data.customerPhone.size() <= 20 &&
              data.serviceId is string &&
-             data.barberId is string &&
+             data.staffId is string &&
              data.duration is number &&
              isValidDate(data.date) &&
              isValidTime(data.time) &&
@@ -72,7 +72,7 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    match /barber_overrides/{barberId} {
+    match /staff_overrides/{staffId} {
       allow read: if true;
       allow write: if isAdmin();
     }

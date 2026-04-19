@@ -39,7 +39,7 @@ export type BlockedSlot = {
   reason: string;
 };
 
-export type Barber = {
+export type StaffMember = {
   id: string;
   name: string;
   photoUrl: string;
@@ -91,6 +91,7 @@ export type SiteConfig = {
     tagline: string;
     logo?: string;
     logoIconName?: string; // lucide-react icon name for the brand
+    aiPersona?: string;
   };
   features: {
     showWhyChooseUs: boolean;
@@ -123,7 +124,7 @@ export type SiteConfig = {
   };
   hours: BusinessHours;
   services: Service[];
-  barbers: Barber[];
+  staff: StaffMember[];
   testimonials: Testimonial[];
   gallery: string[];
   sections: {
@@ -143,7 +144,7 @@ export type SiteConfig = {
       tagline: string;
       steps: {
         service: string;
-        barber: string;
+        staff: string;
         datetime: string;
         details: string;
         payment: string;
@@ -199,7 +200,7 @@ export type Appointment = {
   customerEmail: string;
   customerPhone: string;
   serviceId: string;
-  barberId: string;
+  staffId: string;
   date: string; // YYYY-MM-DD
   time: string; // HH:mm
   duration: number; // minutes, captured at booking

@@ -1,5 +1,5 @@
 import { addMinutes, format, parse, startOfDay, isBefore, isAfter, setHours, setMinutes, getDay, isEqual } from "date-fns";
-import { Appointment, Service, Barber, WorkDay, TimeRange } from "../types";
+import { Appointment, Service, StaffMember, WorkDay, TimeRange } from "../types";
 import { SCHEDULING_CONFIG } from "../constants";
 
 const { BUFFER_TIME, SLOT_INTERVAL, DEFAULT_MISSION_DURATION } = SCHEDULING_CONFIG;
@@ -9,9 +9,9 @@ function parseTimeString(time: string, date: Date) {
   return setMinutes(setHours(startOfDay(date), hours), minutes);
 }
 
-function getWorkDayForDate(date: Date, schedule: Barber["schedule"]): WorkDay {
+function getWorkDayForDate(date: Date, schedule: StaffMember["schedule"]): WorkDay {
   const dayIndex = getDay(date);
-  const days: (keyof Barber["schedule"])[] = [
+  const days: (keyof StaffMember["schedule"])[] = [
     "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
   ];
   return schedule[days[dayIndex]];
@@ -28,12 +28,12 @@ export function isOverlapping(
 
 export function generateSlots(
   date: Date,
-  barber: Barber,
+  staffMember: StaffMember,
   service: Service,
   existingAppointments: Appointment[]
 ) {
   const slots: string[] = [];
-  const workDay = getWorkDayForDate(date, barber.schedule);
+  const workDay = getWorkDayForDate(date, staffMember.schedule);
   
   if (!workDay.isOpen) return [];
 
@@ -66,7 +66,7 @@ export function generateSlots(
     // 4. Check if slot overlaps with existing appointments
     const dateStr = format(date, "yyyy-MM-dd");
     const hasOverlap = existingAppointments.some((app) => {
-      if (app.date !== dateStr || app.barberId !== barber.id || app.status === 'cancelled') return false;
+      if (app.date !== dateStr || app.staffId !== staffMember.id || app.status === 'cancelled') return false;
       
       const appStart = parse(app.time, "HH:mm", startOfDay(date));
       const appEnd = addMinutes(appStart, app.duration || DEFAULT_MISSION_DURATION);
@@ -77,7 +77,7 @@ export function generateSlots(
     });
 
     // 5. Check if slot overlaps with custom blocked slots
-    const hasBlockedSlot = barber.blockedSlots?.some(block => {
+    const hasBlockedSlot = staffMember.blockedSlots?.some(block => {
       if (block.date !== dateStr) return false;
       const blockStart = parseTimeString(block.start, date);
       const blockEnd = parseTimeString(block.end, date);
@@ -85,7 +85,7 @@ export function generateSlots(
     });
 
     // 6. Check if date is in blockedDates
-    const isBlockedDate = barber.blockedDates?.includes(dateStr);
+    const isBlockedDate = staffMember.blockedDates?.includes(dateStr);
 
     if (!isPast && !exceedsWorkHours && !overlapsBreak && !hasOverlap && !hasBlockedSlot && !isBlockedDate) {
       slots.push(format(slotStart, "HH:mm"));
@@ -102,11 +102,11 @@ export function generateSlots(
  */
 export function checkAvailability(
   appointment: Omit<Appointment, 'id' | 'createdAt' | 'status'>,
-  barber: Barber,
+  staffMember: StaffMember,
   existingAppointments: Appointment[]
 ): { available: boolean; reason?: string } {
   const date = parse(appointment.date, "yyyy-MM-dd", new Date());
-  const workDay = getWorkDayForDate(date, barber.schedule);
+  const workDay = getWorkDayForDate(date, staffMember.schedule);
 
   if (!workDay.isOpen) return { available: false, reason: "Personnel is off-duty for this sector." };
   
@@ -124,11 +124,11 @@ export function checkAvailability(
   });
   if (overlapsBreak) return { available: false, reason: "Slot intersects with mandatory personnel break." };
 
-  const isBlockedDate = barber.blockedDates?.includes(appointment.date);
+  const isBlockedDate = staffMember.blockedDates?.includes(appointment.date);
   if (isBlockedDate) return { available: false, reason: "Operational sector is locked for this date." };
 
   const carriesConflict = existingAppointments.some((app) => {
-    if (app.date !== appointment.date || app.barberId !== barber.id || app.status === 'cancelled') return false;
+    if (app.date !== appointment.date || app.staffId !== staffMember.id || app.status === 'cancelled') return false;
     
     const appStart = parse(app.time, "HH:mm", startOfDay(date));
     const appEnd = addMinutes(appStart, app.duration || DEFAULT_MISSION_DURATION);
@@ -138,7 +138,7 @@ export function checkAvailability(
   });
   if (carriesConflict) return { available: false, reason: "Temporal conflict detected. Slot is already allocated within mission bounds." };
 
-  const hasBlockedSlot = barber.blockedSlots?.some(block => {
+  const hasBlockedSlot = staffMember.blockedSlots?.some(block => {
     if (block.date !== appointment.date) return false;
     const blockStart = parseTimeString(block.start, date);
     const blockEnd = parseTimeString(block.end, date);

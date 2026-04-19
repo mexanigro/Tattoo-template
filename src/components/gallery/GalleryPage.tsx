@@ -34,7 +34,7 @@ export function GalleryPage({ onBack }: { onBack: () => void }) {
   }, [selectedImage]);
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300 pt-24 pb-20 px-6">
+    <div className="min-h-screen bg-zinc-50 dark:bg-surface-dark transition-colors duration-300 pt-24 pb-20 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-16">
           <div>
@@ -46,14 +46,14 @@ export function GalleryPage({ onBack }: { onBack: () => void }) {
               Return to Base
             </button>
             <h1 className="text-5xl md:text-7xl font-black text-zinc-950 dark:text-white uppercase tracking-tighter leading-none mb-4">
-              Visual <span className="text-amber-500">Manifest</span>
+              Visual <span className="text-accent-light">Manifest</span>
             </h1>
             <p className="text-zinc-500 max-w-xl text-sm leading-relaxed uppercase tracking-widest font-medium">
               {sectionConfig.title}: {sectionConfig.subtitle} - A comprehensive documentation of operational excellence.
             </p>
           </div>
           <div className="flex items-center gap-4 bg-zinc-900/50 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 transition-colors duration-300">
-             <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-500">
+             <div className="w-10 h-10 bg-accent-light/10 rounded-xl flex items-center justify-center text-accent-light">
                 <Camera size={20} />
              </div>
              <div>
@@ -83,7 +83,7 @@ export function GalleryPage({ onBack }: { onBack: () => void }) {
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
                  <div className="flex items-center justify-between">
                     <div>
-                       <p className="text-amber-500 text-[8px] font-black uppercase tracking-widest mb-1">Sector 0{i + 1}</p>
+                       <p className="text-accent-light text-[8px] font-black uppercase tracking-widest mb-1">Sector 0{i + 1}</p>
                        <p className="text-zinc-950 dark:text-white text-[10px] font-black uppercase tracking-[0.1em]">Visual Record</p>
                     </div>
                     <div className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-zinc-950 dark:text-white">
@@ -107,21 +107,21 @@ export function GalleryPage({ onBack }: { onBack: () => void }) {
           >
             <button 
               onClick={() => setSelectedImage(null)}
-              className="absolute top-6 right-6 text-zinc-950/50 dark:text-white/50 hover:text-zinc-950 dark:hover:text-white p-3 hover:bg-zinc-950/10 dark:hover:bg-white/10 rounded-full transition-all"
+              className="absolute top-6 right-6 text-zinc-950/50 dark:text-white/50 hover:text-zinc-950 dark:hover:text-white p-3 hover:bg-surface-dark/10 dark:hover:bg-white/10 rounded-full transition-all"
             >
               <X size={32} />
             </button>
 
             <button 
               onClick={prevImage}
-              className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-950/50 dark:text-white/50 hover:text-zinc-950 dark:hover:text-white p-4 hover:bg-zinc-950/10 dark:hover:bg-white/10 rounded-full transition-all hidden md:block"
+              className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-950/50 dark:text-white/50 hover:text-zinc-950 dark:hover:text-white p-4 hover:bg-surface-dark/10 dark:hover:bg-white/10 rounded-full transition-all hidden md:block"
             >
               <ChevronLeft size={40} />
             </button>
 
             <button 
               onClick={nextImage}
-              className="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-950/50 dark:text-white/50 hover:text-zinc-950 dark:hover:text-white p-4 hover:bg-zinc-950/10 dark:hover:bg-white/10 rounded-full transition-all hidden md:block"
+              className="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-950/50 dark:text-white/50 hover:text-zinc-950 dark:hover:text-white p-4 hover:bg-surface-dark/10 dark:hover:bg-white/10 rounded-full transition-all hidden md:block"
             >
               <ChevronRight size={40} />
             </button>
@@ -137,7 +137,7 @@ export function GalleryPage({ onBack }: { onBack: () => void }) {
                 referrerPolicy="no-referrer"
               />
               <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 bg-gradient-to-t from-black/80 to-transparent">
-                 <p className="text-amber-500 text-xs font-black uppercase tracking-[0.3em] mb-2">Operational Frame 0{selectedImage + 1}</p>
+                 <p className="text-accent-light text-xs font-black uppercase tracking-[0.3em] mb-2">Operational Frame 0{selectedImage + 1}</p>
                  <h2 className="text-zinc-950 dark:text-white text-2xl md:text-3xl font-black uppercase tracking-tight">Project Documentation Archive</h2>
                  <p className="text-zinc-500 dark:text-zinc-400 transition-colors duration-300 text-xs uppercase tracking-widest mt-2">{selectedImage + 1} / {gallery.length} Records</p>
               </div>

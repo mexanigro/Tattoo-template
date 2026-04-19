@@ -9,14 +9,14 @@ export function Services({ onBookClick }: { onBookClick: () => void }) {
   const { services: sectionConfig } = sections;
 
   return (
-    <section id="services" className="py-24 bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300 px-6">
+    <section id="services" className="py-24 bg-zinc-50 dark:bg-surface-dark transition-colors duration-300 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-amber-500 font-black uppercase tracking-[0.3em] text-xs mb-4"
+            className="text-accent-light font-black uppercase tracking-[0.3em] text-xs mb-4"
           >
             {sectionConfig.title}
           </motion.h2>
@@ -40,7 +40,7 @@ export function Services({ onBookClick }: { onBookClick: () => void }) {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
               className={cn(
-                "group relative bg-white dark:bg-zinc-900 transition-colors duration-300 border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 rounded-3xl overflow-hidden hover:border-amber-500/50 transition-all flex flex-col sm:flex-row",
+                "group relative bg-white dark:bg-zinc-900 transition-colors duration-300 border border-zinc-200 dark:border-zinc-800 transition-colors duration-300 rounded-3xl overflow-hidden hover:border-accent-light/50 transition-all flex flex-col sm:flex-row",
                 siteConfig.features.showBooking && "cursor-pointer"
               )}
               onClick={siteConfig.features.showBooking ? onBookClick : undefined}
@@ -57,11 +57,11 @@ export function Services({ onBookClick }: { onBookClick: () => void }) {
               <div className="p-8 sm:w-3/5 flex flex-col justify-center">
                 {siteConfig.features.showBooking && (
                   <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0">
-                    <ChevronRight className="text-amber-500" />
+                    <ChevronRight className="text-accent-light" />
                   </div>
                 )}
 
-                <h4 className="text-2xl font-black text-zinc-950 dark:text-white mb-3 tracking-tight group-hover:text-amber-500 transition-colors">
+                <h4 className="text-2xl font-black text-zinc-950 dark:text-white mb-3 tracking-tight group-hover:text-accent-light transition-colors">
                   {service.name}
                 </h4>
                 <p className="text-zinc-500 dark:text-zinc-400 transition-colors duration-300 text-sm mb-8 leading-relaxed max-w-sm">
@@ -69,8 +69,8 @@ export function Services({ onBookClick }: { onBookClick: () => void }) {
                 </p>
 
                 <div className="flex items-center gap-6 mt-auto">
-                  <div className="flex items-center gap-2 text-zinc-950 dark:text-white font-bold bg-zinc-50 dark:bg-zinc-950 transition-colors duration-300 px-4 py-2 rounded-xl border border-zinc-200 dark:border-zinc-800 transition-colors duration-300">
-                    <DollarSign size={16} className="text-amber-500" />
+                  <div className="flex items-center gap-2 text-zinc-950 dark:text-white font-bold bg-zinc-50 dark:bg-surface-dark transition-colors duration-300 px-4 py-2 rounded-xl border border-zinc-200 dark:border-zinc-800 transition-colors duration-300">
+                    <DollarSign size={16} className="text-accent-light" />
                     <span>{service.price}</span>
                   </div>
                   <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 transition-colors duration-300 text-xs uppercase tracking-widest font-semibold">

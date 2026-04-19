@@ -35,14 +35,14 @@ export function PolicyModal({ type, onClose }: { type: PolicyType; onClose: () =
             <h3 className="text-lg font-bold text-zinc-950 dark:text-white mt-6 mb-2">3. Refusal of Service</h3>
             <p>We reserve the right to refuse service to anyone demonstrating inappropriate behavior, posing a health or safety risk, or violating our policies.</p>
             <h3 className="text-lg font-bold text-zinc-950 dark:text-white mt-6 mb-2">4. Liability</h3>
-            <p>{siteConfig.brand.name} is not liable for any allergic reactions or injuries unless directly resulting from demonstrable negligence on our part. Please inform your barber of any skin sensitivities or conditions prior to your service.</p>
+            <p>{siteConfig.brand.name} is not liable for any allergic reactions or injuries unless directly resulting from demonstrable negligence on our part. Please inform your service provider of any skin sensitivities or conditions prior to your service.</p>
           </div>
         );
       case "cancellation":
         return (
           <div className="space-y-4 text-sm text-zinc-600 dark:text-zinc-300 transition-colors duration-300 leading-relaxed max-w-prose">
             <h2 className="text-2xl font-black uppercase tracking-tight text-zinc-950 dark:text-white mb-6">Cancellation Policy</h2>
-            <p>We value your time, as well as the time of our master barbers. To ensure we can accommodate all our clients, we enforce the following cancellation policy:</p>
+            <p>We value your time, as well as the time of our team. To ensure we can accommodate all our clients, we enforce the following cancellation policy:</p>
             <h3 className="text-lg font-bold text-zinc-950 dark:text-white mt-6 mb-2">1. Required Notice</h3>
             <p>We require at least 2 hours' notice for any cancellations or rescheduling of an appointment.</p>
             <h3 className="text-lg font-bold text-zinc-950 dark:text-white mt-6 mb-2">2. No-Shows and Late Cancellations</h3>

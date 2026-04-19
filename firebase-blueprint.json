@@ -2,7 +2,7 @@
   "entities": {
     "Appointment": {
       "title": "Appointment",
-      "description": "A scheduled grooming appointment at the barbershop.",
+      "description": "A scheduled appointment.",
       "type": "object",
       "properties": {
         "id": { "type": "string", "description": "Unique identifier for the appointment" },
@@ -10,7 +10,7 @@
         "customerEmail": { "type": "string", "format": "email", "description": "Contact email for notifications" },
         "customerPhone": { "type": "string", "description": "Contact phone number" },
         "serviceId": { "type": "string", "description": "ID of the service selected" },
-        "barberId": { "type": "string", "description": "ID of the barber selected" },
+        "staffId": { "type": "string", "description": "ID of the staff member selected" },
         "date": { "type": "string", "format": "date", "description": "The date of the appointment (YYYY-MM-DD)" },
         "time": { "type": "string", "description": "The time of the appointment (HH:mm)" },
         "duration": { "type": "number", "description": "Duration in minutes" },
@@ -23,15 +23,15 @@
         "stripeSessionId": { "type": "string", "description": "Linked Stripe session identifier" },
         "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp" }
       },
-      "required": ["customerName", "customerEmail", "serviceId", "barberId", "date", "time", "duration", "status"]
+      "required": ["customerName", "customerEmail", "serviceId", "staffId", "date", "time", "duration", "status"]
     },
-    "BarberOverride": {
-      "title": "Barber Override",
+    "StaffOverride": {
+      "title": "Staff Override",
       "description": "Custom schedule overrides for specific personnel.",
       "type": "object",
       "properties": {
-        "id": { "type": "string", "description": "Barber ID from siteConfig" },
-        "blockedDates": { "type": "array", "items": { "type": "string" }, "description": "Dates when barber is unavailable" },
+        "id": { "type": "string", "description": "Staff member ID from siteConfig" },
+        "blockedDates": { "type": "array", "items": { "type": "string" }, "description": "Dates when the staff member is unavailable" },
         "blockedSlots": { 
           "type": "array", 
           "items": { 
@@ -53,8 +53,8 @@
       "schema": "Appointment",
       "description": "Collection of all bookings."
     },
-    "/barber_overrides/{barberId}": {
-      "schema": "BarberOverride",
+    "/staff_overrides/{staffId}": {
+      "schema": "StaffOverride",
       "description": "Collection of schedule exceptions."
     }
   }
