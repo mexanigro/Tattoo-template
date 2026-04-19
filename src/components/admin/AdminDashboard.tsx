@@ -1,8 +1,8 @@
 import React from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Scissors, Calendar, Users, Briefcase, ChevronRight, X, Clock, MapPin, CheckCircle, Ban, Mail, Phone, CreditCard, AlertCircle } from "lucide-react";
+import { Scissors, CalendarDays, Users, Briefcase, ChevronRight, X, Clock, MapPin, CheckCircle, Ban, Mail, Phone, CreditCard, AlertCircle } from "lucide-react";
 import { Appointment, AppointmentStatus, StaffMember } from "../../types";
-import { format, isSameDay, parse } from "date-fns";
+import { format, isSameDay, startOfDay } from "date-fns";
 import { cn } from "../../lib/utils";
 import { dbService } from "../../services/db";
 import { siteConfig } from "../../config/site";
@@ -10,6 +10,7 @@ import { aiService } from "../../services/ai";
 
 import { StaffLogistics } from "./StaffLogistics";
 import { ThemeToggle } from "../theme/ThemeToggle";
+import { Calendar } from "../ui/calendar";
 
 export function AdminDashboard({ onExit }: { onExit: () => void }) {
   const { services: SERVICES, brand } = siteConfig;
@@ -124,7 +125,7 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
               activeTab === 'missions' ? "bg-accent-light text-zinc-950 shadow-lg shadow-accent-light/20" : "text-muted-foreground transition-colors duration-300 hover:text-foreground"
             )}
           >
-            <Calendar size={14} />
+            <CalendarDays size={14} />
             Sector Missions
           </button>
           <button
@@ -144,7 +145,7 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
             <div className="mb-12 grid grid-cols-1 gap-4 md:grid-cols-4">
               <div className="group relative overflow-hidden rounded-3xl border border-border bg-card/90 p-6 shadow-elevated backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
                 <div className="absolute right-0 top-0 p-4 opacity-10 transition-opacity group-hover:opacity-20">
-                  <Calendar size={40} className="text-foreground" />
+                  <CalendarDays size={40} className="text-foreground" />
                 </div>
                 <p className="mb-4 text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground">Daily Volume</p>
                 <div className="flex items-baseline gap-2">
@@ -192,14 +193,13 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
                 <div className="glass-panel space-y-6 rounded-3xl p-6 shadow-elevated">
                   <div className="space-y-4">
                      <div className="flex items-center gap-2">
-                        <Calendar size={14} className="text-accent-light" />
+                        <CalendarDays size={14} className="text-accent-light" />
                         <h3 className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground">Temporal Filter</h3>
                      </div>
-                     <input 
-                       type="date"
-                       value={format(filterDate, "yyyy-MM-dd")}
-                       onChange={(e) => setFilterDate(new Date(e.target.value))}
-                       className="w-full rounded-xl border border-border bg-background p-4 font-mono text-sm text-foreground outline-none transition-all focus:border-accent-light/50"
+                     <Calendar
+                       selected={filterDate}
+                       onSelect={(d) => setFilterDate(startOfDay(d))}
+                       className="max-w-full border-border bg-card shadow-elevated"
                      />
                   </div>
 
@@ -323,7 +323,7 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
                          </p>
                       </div>
                       <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/60 px-5 py-2.5">
-                         <Calendar size={14} className="text-accent-light" />
+                         <CalendarDays size={14} className="text-accent-light" />
                          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                             {format(filterDate, "EEEE, MMMM do")}
                          </span>

@@ -1,10 +1,12 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Scissors, Clock, Calendar, Shield, AlertCircle, Save, ChevronRight, User, Coffee, X } from 'lucide-react';
+import { Scissors, Clock, CalendarDays, Shield, AlertCircle, Save, ChevronRight, User, Coffee, X } from 'lucide-react';
 import { StaffMember, WeeklySchedule, WorkDay, TimeRange } from '../../types';
 import { siteConfig } from '../../config/site';
 import { dbService } from '../../services/db';
 import { cn } from '../../lib/utils';
+import { format, isBefore, startOfDay } from 'date-fns';
+import { Calendar } from '../ui/calendar';
 
 export function StaffLogistics() {
   const [staff, setStaff] = React.useState<StaffMember[]>(siteConfig.staff);
@@ -294,34 +296,25 @@ export function StaffLogistics() {
               <div className="mt-12 space-y-6">
                 <div className="p-6 bg-card transition-colors duration-300 border border-border transition-colors duration-300 rounded-2xl">
                     <div className="flex items-center gap-3 mb-6">
-                        <Calendar size={18} className="text-accent-light" />
+                        <CalendarDays size={18} className="text-accent-light" />
                         <h3 className="text-xs font-black uppercase tracking-widest text-foreground">Blocked Operational Dates</h3>
                     </div>
                     
-                    <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
-                        {[0,1,2,3,4,5,6].map(i => {
-                            const date = new Date();
-                            date.setDate(date.getDate() + i);
-                            const dateStr = date.toISOString().split('T')[0];
-                            const isBlocked = selectedStaffMember.blockedDates?.includes(dateStr);
-                            
-                            return (
-                                <button
-                                    key={dateStr}
-                                    onClick={() => handleToggleBlockedDate(dateStr)}
-                                    className={cn(
-                                        "p-3 rounded-xl border text-[9px] font-black uppercase text-center transition-all",
-                                        isBlocked 
-                                            ? "bg-red-500/10 border-red-500/30 text-red-500" 
-                                            : "border-border bg-muted/70 text-muted-foreground transition-colors hover:border-accent-light/40 dark:bg-muted/40"
-                                    )}
-                                >
-                                    <div className="opacity-50 mb-1">{date.toLocaleDateString('en-US', { weekday: 'short' })}</div>
-                                    <div>{date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
-                                </button>
-                            );
-                        })}
-                    </div>
+                    <Calendar
+                      selected={null}
+                      onSelect={(d) =>
+                        handleToggleBlockedDate(format(d, "yyyy-MM-dd"))
+                      }
+                      disabled={(d) =>
+                        isBefore(startOfDay(d), startOfDay(new Date()))
+                      }
+                      isDateBlocked={(d) =>
+                        !!selectedStaffMember.blockedDates?.includes(
+                          format(d, "yyyy-MM-dd"),
+                        )
+                      }
+                      className="max-w-full border-border bg-card shadow-elevated sm:max-w-[340px]"
+                    />
                     <p className="mt-4 text-[9px] italic uppercase tracking-tight text-muted-foreground">* Toggle dates to lock operational capacity for this specialist.</p>
                 </div>
 

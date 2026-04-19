@@ -2,13 +2,14 @@ import React from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Scissors, User, Calendar as CalendarIcon, Clock, CheckCircle, X, ChevronRight, ChevronLeft, Phone, Mail, UserCircle, CreditCard, AlertCircle } from "lucide-react";
 import { Service, StaffMember, Appointment, PaymentStatus, AppointmentStatus } from "../../types";
-import { format, addDays } from "date-fns";
+import { format, isBefore, startOfDay } from "date-fns";
 import { generateSlots } from "../../lib/booking";
 import { cn } from "../../lib/utils";
 import { dbService } from "../../services/db";
 import { siteConfig } from "../../config/site";
 import { aiService } from "../../services/ai";
 import { Sparkles, Send } from "lucide-react";
+import { Calendar } from "../ui/calendar";
 
 type Step = "service" | "staff" | "datetime" | "details" | "payment" | "success";
 
@@ -455,48 +456,27 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
                 <ChevronLeft size={14} /> Back to staff
               </button>
 
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground">Temporal Selection</h3>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-accent-light/70">Next 14 Days</span>
+              <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
+                <div className="shrink-0 space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground">
+                      Choose date
+                    </h3>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                      {format(selectedDate, "MMM d, yyyy")}
+                    </span>
+                  </div>
+                  <Calendar
+                    selected={selectedDate}
+                    onSelect={(d) => setSelectedDate(startOfDay(d))}
+                    disabled={(d) =>
+                      isBefore(startOfDay(d), startOfDay(new Date()))
+                    }
+                    className="max-w-full border-border bg-card shadow-elevated sm:max-w-[340px]"
+                  />
                 </div>
-                <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-2 px-2">
-                  {Array.from({ length: 14 }).map((_, i) => {
-                    const d = addDays(new Date(), i);
-                    const isSelected = format(d, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd");
-                    const isToday = format(d, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
-                    
-                    return (
-                      <button
-                        type="button"
-                        key={i}
-                        onClick={() => setSelectedDate(d)}
-                        className={cn(
-                          "group relative flex min-w-[70px] flex-col items-center justify-center rounded-xl border py-4 transition-all duration-300",
-                          isSelected 
-                            ? "scale-105 border-accent-light bg-accent-light text-zinc-950 shadow-lg shadow-accent-light/25" 
-                            : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground dark:bg-card/90"
-                        )}
-                      >
-                        {isToday && !isSelected && (
-                          <span className="absolute -top-1 -right-1 w-2 h-2 bg-accent-light rounded-full animate-pulse" />
-                        )}
-                        <span className="text-[9px] font-black uppercase tracking-tighter mb-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
-                          {format(d, "EEE")}
-                        </span>
-                        <span className="text-xl font-black leading-none flex flex-col items-center">
-                          {format(d, "d")}
-                          <span className="text-[8px] font-bold uppercase mt-1 opacity-40">
-                            {format(d, "MMM")}
-                          </span>
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
 
-              <div className="space-y-4">
+                <div className="min-w-0 flex-1 space-y-4">
                 <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Available Times</h3>
                 {availableSlots.length > 0 ? (
                   <div className="grid grid-cols-3 gap-3">
@@ -519,6 +499,7 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
                     <p className="text-sm font-bold uppercase italic tracking-widest text-muted-foreground">Fully booked for this date</p>
                   </div>
                 )}
+                </div>
               </div>
             </motion.div>
           )}
