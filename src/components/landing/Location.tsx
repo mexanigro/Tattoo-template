@@ -1,10 +1,10 @@
 import React from "react";
-import { MapPin, Phone, Mail, Clock, ExternalLink } from "lucide-react";
+import { MapPin, Phone, Mail, ExternalLink } from "lucide-react";
 import { motion } from "motion/react";
 import { siteConfig } from "../../config/site";
 
 export function Location() {
-  const { contact, hours, sections } = siteConfig;
+  const { contact, sections } = siteConfig;
   const { location: sectionConfig } = sections;
 
   return (
@@ -55,40 +55,6 @@ export function Location() {
                </div>
             </div>
 
-            <div className="space-y-4 rounded-3xl border border-border bg-muted p-8 shadow-elevated transition-colors duration-300">
-              <div className="flex items-center gap-2 text-accent-light font-bold uppercase text-xs tracking-widest mb-2">
-                <Clock size={18} />
-                <span>Hours of Operation</span>
-              </div>
-              <ul className="space-y-3 text-sm text-muted-foreground transition-colors duration-300">
-                <li className="flex justify-between border-b border-border pb-2 transition-colors duration-300">
-                  <span>Monday - Thursday</span> 
-                  <span className="font-bold text-foreground transition-colors duration-300">
-                    {hours.monday?.start} - {hours.monday?.end}
-                  </span>
-                </li>
-                <li className="flex justify-between border-b border-border pb-2 transition-colors duration-300">
-                  <span>Friday</span> 
-                  <span className="font-bold text-foreground transition-colors duration-300">
-                    {hours.friday?.start} - {hours.friday?.end}
-                  </span>
-                </li>
-                <li className="flex justify-between border-b border-border pb-2 transition-colors duration-300">
-                  <span>Saturday</span> 
-                  <span className="font-bold text-foreground transition-colors duration-300">
-                    {hours.saturday?.start} - {hours.saturday?.end}
-                  </span>
-                </li>
-                <li className="flex justify-between">
-                  <span>Sunday</span> 
-                  {hours.sunday ? (
-                    <span className="font-bold text-foreground transition-colors duration-300">{hours.sunday.start} - {hours.sunday.end}</span>
-                  ) : (
-                    <span className="font-black uppercase text-[10px] text-muted-foreground transition-colors duration-300">Closed</span>
-                  )}
-                </li>
-              </ul>
-            </div>
           </div>
 
           <div className="relative lg:self-stretch lg:flex lg:flex-col">
