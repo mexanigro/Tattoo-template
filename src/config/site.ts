@@ -272,8 +272,8 @@ export const siteConfig: SiteConfig = {
     }
   },
   payment: {
-    enabled: true, // Prepared but relies on ENV being set
-    mode: 'none', // 'none' | 'deposit' | 'full'
+    enabled: false, // Set true when Stripe (and ENV) are configured
+    mode: 'none', // 'none' | 'deposit' | 'full' — template default: cardless / free booking flow
     depositAmount: 2000, // $20.00 if using deposit mode
     currency: 'usd',
     stripePublishableKey: import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "",

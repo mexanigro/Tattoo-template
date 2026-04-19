@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Scissors, User, Calendar as CalendarIcon, Clock, CheckCircle, X, ChevronRight, ChevronLeft, Phone, Mail, UserCircle, CreditCard, AlertCircle } from "lucide-react";
-import { Service, StaffMember, Appointment, PaymentStatus } from "../../types";
+import { Service, StaffMember, Appointment, PaymentStatus, AppointmentStatus } from "../../types";
 import { format, addDays } from "date-fns";
 import { generateSlots } from "../../lib/booking";
 import { cn } from "../../lib/utils";
@@ -15,6 +15,8 @@ type Step = "service" | "staff" | "datetime" | "details" | "payment" | "success"
 export function BookingWizard({ onClose }: { onClose: () => void }) {
   const { services: SERVICES, staff: STAFF, brand, payment: PAYMENT_CONFIG, sections } = siteConfig;
   const { booking: config } = sections;
+  /** When false, no Stripe step; new appointments are stored as `confirmed` without card flow. */
+  const paymentsRequired = PAYMENT_CONFIG.enabled && PAYMENT_CONFIG.mode !== "none";
   const [step, setStep] = React.useState<Step>("service");
 
   React.useEffect(() => {
@@ -111,14 +113,17 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
       return;
     }
 
-    // Determine initial payment status
-    let initialPaymentStatus: PaymentStatus = 'pending';
-    if (PAYMENT_CONFIG.enabled) {
-      if (PAYMENT_CONFIG.mode === 'deposit') initialPaymentStatus = 'deposit_required';
-      else if (PAYMENT_CONFIG.mode === 'full') initialPaymentStatus = 'pending';
+    let initialStatus: AppointmentStatus = "pending";
+    let initialPaymentStatus: PaymentStatus | undefined;
+    if (paymentsRequired) {
+      initialStatus = "pending";
+      if (PAYMENT_CONFIG.mode === "deposit") initialPaymentStatus = "deposit_required";
+      else if (PAYMENT_CONFIG.mode === "full") initialPaymentStatus = "pending";
+    } else {
+      initialStatus = "confirmed";
     }
 
-    const newAppointment: Omit<Appointment, 'id' | 'createdAt'> = {
+    const newAppointment: Omit<Appointment, "id" | "createdAt"> = {
       customerName: customerInfo.name,
       customerEmail: customerInfo.email,
       customerPhone: customerInfo.phone,
@@ -127,8 +132,8 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
       date: format(selectedDate, "yyyy-MM-dd"),
       time: selectedTime,
       duration: selectedService.duration,
-      status: "pending",
-      paymentStatus: initialPaymentStatus,
+      status: initialStatus,
+      ...(initialPaymentStatus !== undefined ? { paymentStatus: initialPaymentStatus } : {}),
     };
 
     try {
@@ -145,7 +150,7 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
         }),
       }).catch(err => console.error("Notification trigger failed:", err));
 
-      if (PAYMENT_CONFIG.enabled && PAYMENT_CONFIG.mode !== 'none') {
+      if (paymentsRequired) {
         const amount = PAYMENT_CONFIG.mode === 'deposit' 
           ? PAYMENT_CONFIG.depositAmount || 2000 
           : selectedService.price * 100;
@@ -168,12 +173,11 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
           window.location.href = data.url;
           return;
         } else {
-          // Stripe not configured or server error - Fail gracefully
           console.warn("Stripe redirect failed:", data.error);
-          setStep("success");
+          setPaymentError(typeof data.error === "string" ? data.error : "Checkout could not be started.");
+          setStep("payment");
         }
       } else {
-        await dbService.updateAppointment(id, { status: "confirmed" });
         setStep("success");
       }
     } catch (error) {
@@ -222,7 +226,7 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
       { key: "staff", label: config.steps.staff, icon: User },
       { key: "datetime", label: config.steps.datetime, icon: CalendarIcon },
       { key: "details", label: config.steps.details, icon: UserCircle },
-      ...(PAYMENT_CONFIG.enabled && PAYMENT_CONFIG.mode !== 'none' ? [{ key: "payment", label: config.steps.payment, icon: CreditCard } as const] : []),
+      ...(paymentsRequired ? [{ key: "payment", label: config.steps.payment, icon: CreditCard } as const] : []),
     ];
 
     if (step === "success") return null;
@@ -652,7 +656,7 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
                   </div>
                   <h2 className="text-4xl font-black uppercase tracking-tight text-zinc-950 dark:text-white">
                     {
-                      (new URLSearchParams(window.location.search).get("booking_status") === "success" || PAYMENT_CONFIG.mode === 'none') 
+                      (new URLSearchParams(window.location.search).get("booking_status") === "success" || !paymentsRequired)
                        ? config.success.confirmed 
                        : config.success.requestSaved
                     }
@@ -661,7 +665,7 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
                     {
                       new URLSearchParams(window.location.search).get("booking_status") === "success" 
                         ? "Excellent. Your payment was successful and your spot is strictly reserved." 
-                        : PAYMENT_CONFIG.mode === 'none'
+                        : !paymentsRequired
                           ? "Success! Your chair is reserved and we've added you to the calendar. We'll see you soon."
                           : "Your booking is saved in our system! We're just waiting for payment verification. A team member will review it and confirm your final slot shortly."
                     }
