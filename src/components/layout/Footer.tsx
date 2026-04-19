@@ -61,11 +61,20 @@ export function Footer({
             {siteConfig.features.showTeam && (
               <li><button onClick={() => onPageChange("landing")} className="hover:text-accent-light transition-colors cursor-pointer">The Team</button></li>
             )}
-            {siteConfig.features.showLocation && (
-              <li><button onClick={() => onPageChange("landing")} className="hover:text-accent-light transition-colors cursor-pointer">Location</button></li>
+            {siteConfig.features.showWhyChooseUs && (
+              <li><button onClick={() => onPageChange("landing")} className="hover:text-accent-light transition-colors cursor-pointer">Why Choose Us</button></li>
             )}
             {siteConfig.features.showGallery && (
               <li><button onClick={() => onPageChange("gallery")} className="hover:text-accent-light transition-colors cursor-pointer">Portfolio</button></li>
+            )}
+            {siteConfig.features.showTestimonials && (
+              <li><button onClick={() => onPageChange("landing")} className="hover:text-accent-light transition-colors cursor-pointer">Testimonials</button></li>
+            )}
+            {siteConfig.features.showInquiry && (
+              <li><button onClick={() => onPageChange("landing")} className="hover:text-accent-light transition-colors cursor-pointer">Contact</button></li>
+            )}
+            {siteConfig.features.showLocation && (
+              <li><button onClick={() => onPageChange("landing")} className="hover:text-accent-light transition-colors cursor-pointer">Location</button></li>
             )}
           </ul>
         </div>

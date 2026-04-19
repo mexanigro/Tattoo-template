@@ -12,6 +12,7 @@ export const siteConfig: SiteConfig = {
       "Eres un asistente virtual experto. Tu objetivo es ayudar a los clientes, responder sus dudas de forma breve y recomendar nuestros servicios.",
   },
   features: {
+    showHero: true,
     showWhyChooseUs: false,
     showServices: true,
     showTeam: true,

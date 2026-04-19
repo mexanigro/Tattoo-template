@@ -8,7 +8,7 @@ export function WhyChooseUs() {
   const { whyChooseUs: sectionConfig } = sections;
 
   return (
-    <section className="py-24 bg-white dark:bg-zinc-900 transition-colors duration-300 px-6">
+    <section id="why-choose-us" className="py-24 bg-white dark:bg-zinc-900 transition-colors duration-300 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div className="relative">

@@ -37,8 +37,20 @@ export default function App() {
 
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("booking_status")) {
+    if (params.get("booking_status") && siteConfig.features.showBooking) {
       setShowBooking(true);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (page === "gallery" && !siteConfig.features.showGallery) {
+      setPage("landing");
+    }
+  }, [page]);
+
+  React.useEffect(() => {
+    if (!siteConfig.features.showBooking) {
+      setShowBooking(false);
     }
   }, []);
 
@@ -74,7 +86,7 @@ export default function App() {
         <ScrollToTop />
         <Chatbot />
         <AnimatePresence>
-          {showBooking && (
+          {siteConfig.features.showBooking && showBooking && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                <motion.div 
                  initial={{ opacity: 0 }}
@@ -103,7 +115,7 @@ export default function App() {
       <Navbar onBookClick={handleBookNow} onPageChange={setPage} currentPage={page} />
       
       <main>
-        <Hero onBookClick={handleBookNow} />
+        {siteConfig.features.showHero && <Hero onBookClick={handleBookNow} />}
         {siteConfig.features.showServices && <Services onBookClick={handleBookNow} />}
         {siteConfig.features.showWhyChooseUs && <WhyChooseUs />}
         {siteConfig.features.showTeam && <Team onBookClick={handleBookNow} />}

@@ -24,9 +24,12 @@ export function Navbar({ onBookClick, onPageChange, currentPage }: {
   const navLinks = [
     { name: "Services", href: "#services", type: "anchor", enabled: siteConfig.features.showServices },
     { name: "Team", href: "#team", type: "anchor", enabled: siteConfig.features.showTeam },
-    { name: "Location", href: "#location", type: "anchor", enabled: siteConfig.features.showLocation },
+    { name: "Why Us", href: "#why-choose-us", type: "anchor", enabled: siteConfig.features.showWhyChooseUs },
     { name: "Gallery", href: "#gallery", type: "page", enabled: siteConfig.features.showGallery },
-  ].filter(link => link.enabled);
+    { name: "Stories", href: "#testimonials", type: "anchor", enabled: siteConfig.features.showTestimonials },
+    { name: "Contact", href: "#contact", type: "anchor", enabled: siteConfig.features.showInquiry },
+    { name: "Location", href: "#location", type: "anchor", enabled: siteConfig.features.showLocation },
+  ].filter((link) => link.enabled);
 
   const handleHomeClick = (e: React.MouseEvent) => {
     e.preventDefault();

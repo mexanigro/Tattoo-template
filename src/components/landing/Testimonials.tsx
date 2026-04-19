@@ -8,7 +8,7 @@ export function Testimonials() {
   const { testimonials: sectionConfig } = sections;
 
   return (
-    <section className="py-24 bg-zinc-50 dark:bg-surface-dark transition-colors duration-300 px-6">
+    <section id="testimonials" className="py-24 bg-zinc-50 dark:bg-surface-dark transition-colors duration-300 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20">
           <h2 className="text-accent-light font-bold uppercase tracking-[0.3em] text-xs mb-4">{sectionConfig.title}</h2>

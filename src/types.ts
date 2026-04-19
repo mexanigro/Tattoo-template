@@ -96,6 +96,7 @@ export type SiteConfig = {
     aiPersona?: string;
   };
   features: {
+    showHero: boolean;
     showWhyChooseUs: boolean;
     showServices: boolean;
     showTeam: boolean;
