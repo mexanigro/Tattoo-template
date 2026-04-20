@@ -37,7 +37,7 @@ export function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-4xl font-black uppercase tracking-tighter text-foreground md:text-6xl"
+              className="text-4xl font-black uppercase tracking-wide text-foreground md:text-6xl"
             >
               {sectionConfig.subtitle}
             </motion.h2>

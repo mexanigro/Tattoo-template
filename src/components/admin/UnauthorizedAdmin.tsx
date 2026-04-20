@@ -21,7 +21,7 @@ export function UnauthorizedAdmin({ email, onSignOut }: Props) {
         </div>
 
         <div className="space-y-3">
-          <h1 className="text-2xl font-black uppercase tracking-tight text-foreground md:text-3xl">
+          <h1 className="text-2xl font-black uppercase tracking-wide text-foreground md:text-3xl">
             Access denied
           </h1>
           <p className="text-sm leading-relaxed text-muted-foreground">

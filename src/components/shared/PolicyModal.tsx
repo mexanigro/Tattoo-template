@@ -36,7 +36,7 @@ export function PolicyModal({ type, onClose }: { type: LegalDocKind; onClose: ()
           <X size={24} />
         </button>
         <div className="no-scrollbar flex-1 overflow-y-auto pr-2">
-          <h2 className="mb-6 text-2xl font-black uppercase tracking-tight text-foreground">{TITLES[type]}</h2>
+          <h2 className="mb-6 text-2xl font-black uppercase tracking-wide text-foreground">{TITLES[type]}</h2>
           <div className="max-w-prose space-y-6 text-sm leading-relaxed text-muted-foreground">
             {sections.map((block, idx) => (
               <div key={idx} className="space-y-3">

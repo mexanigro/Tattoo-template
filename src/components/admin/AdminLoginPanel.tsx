@@ -68,7 +68,7 @@ export function AdminLoginPanel({ onExit }: Props) {
         </div>
       ) : (
         <>
-          <h2 className="mb-2 text-3xl font-black uppercase tracking-tighter text-foreground">
+          <h2 className="mb-2 text-3xl font-black uppercase tracking-wide text-foreground">
             Terminal <span className="text-accent-light">Access</span>
           </h2>
           <div className="mb-8 flex items-center justify-center gap-2">

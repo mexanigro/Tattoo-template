@@ -123,7 +123,7 @@ export function StaffProfilePage({
               <p className="mb-2 text-xs font-bold uppercase tracking-[0.3em] text-accent-light">
                 {siteConfig.sections.team.subtitle}
               </p>
-              <h1 className="font-serif text-3xl font-light tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
+              <h1 className="font-serif text-3xl font-normal tracking-wide text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
                 {member.name}
               </h1>
               <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -197,7 +197,7 @@ export function StaffProfilePage({
                 <p className="mb-1.5 text-xs font-bold uppercase tracking-[0.3em] text-accent-light">
                   Work
                 </p>
-                <h2 className="font-serif text-3xl font-light tracking-tight text-foreground sm:text-4xl">
+                <h2 className="font-serif text-3xl font-normal tracking-wide text-foreground sm:text-4xl">
                   Portfolio
                 </h2>
               </div>

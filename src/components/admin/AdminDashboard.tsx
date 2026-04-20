@@ -91,7 +91,7 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
               <div className="flex h-10 w-10 rotate-3 items-center justify-center rounded-xl bg-accent-light shadow-lg shadow-accent-light/20">
                  <Scissors className="text-zinc-950" size={20} />
               </div>
-              <h1 className="text-3xl font-black uppercase tracking-tighter text-foreground">Mission <span className="text-accent-light">Control</span></h1>
+              <h1 className="text-3xl font-black uppercase tracking-wide text-foreground">Mission <span className="text-accent-light">Control</span></h1>
             </div>
             <div className="flex items-center gap-3">
               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">{brand.name} SYSTEMS</p>
@@ -258,7 +258,7 @@ export function AdminDashboard({ onExit }: { onExit: () => void }) {
                             <div className="h-2 w-2 animate-pulse rounded-full bg-accent-light" />
                             <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-accent-light">Sector Intelligence Core</h3>
                          </div>
-                         <h2 className="text-2xl font-black uppercase tracking-tight text-foreground">Tactical <span className="text-muted-foreground">Analytics</span></h2>
+                         <h2 className="text-2xl font-black uppercase tracking-wide text-foreground">Tactical <span className="text-muted-foreground">Analytics</span></h2>
                          <p className="max-w-md text-xs text-muted-foreground">Gemini-powered operational oversight. Synchronize missions with neural strategy.</p>
                       </div>
                       

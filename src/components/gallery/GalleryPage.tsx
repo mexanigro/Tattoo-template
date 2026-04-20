@@ -57,7 +57,7 @@ export function GalleryPage({ onBack }: { onBack: () => void }) {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-4xl font-black uppercase leading-none tracking-tighter text-foreground sm:text-6xl md:text-7xl"
+              className="text-4xl font-black uppercase leading-none tracking-wide text-foreground sm:text-6xl md:text-7xl"
             >
               {sectionConfig.subtitle}
             </motion.h1>

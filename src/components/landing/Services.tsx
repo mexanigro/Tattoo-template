@@ -43,7 +43,7 @@ export function Services({ onBookClick }: { onBookClick: () => void }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-4xl font-black uppercase tracking-tighter text-foreground md:text-6xl"
+              className="text-4xl font-black uppercase tracking-wide text-foreground md:text-6xl"
             >
               {sectionConfig.subtitle}
             </motion.h2>
@@ -96,7 +96,7 @@ export function Services({ onBookClick }: { onBookClick: () => void }) {
 
                 {/* Service index number */}
                 <div className="absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm">
-                  <span className="font-serif text-sm font-bold text-white/80">
+                  <span className="font-gothic text-base text-white/80">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                 </div>

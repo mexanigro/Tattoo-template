@@ -642,7 +642,7 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
                   <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full border border-red-500/25 bg-red-500/10">
                     <X className="text-red-500" size={60} />
                   </div>
-                  <h2 className="text-4xl font-black uppercase tracking-tight text-foreground">{config.success.cancelled}</h2>
+                  <h2 className="text-4xl font-black uppercase tracking-wide text-foreground">{config.success.cancelled}</h2>
                   <p className="mx-auto max-w-xs text-sm leading-relaxed text-muted-foreground">
                     Your appointment has been successfully cancelled.
                   </p>
@@ -660,7 +660,7 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
                   <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full border border-emerald-500/25 bg-emerald-500/10">
                     <CheckCircle className="text-emerald-500" size={60} />
                   </div>
-                  <h2 className="text-4xl font-black uppercase tracking-tight text-foreground">
+                  <h2 className="text-4xl font-black uppercase tracking-wide text-foreground">
                     {
                       (new URLSearchParams(window.location.search).get("booking_status") === "success" || !paymentsRequired)
                        ? config.success.confirmed 

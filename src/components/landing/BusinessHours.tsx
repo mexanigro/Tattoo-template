@@ -70,7 +70,7 @@ export function BusinessHours() {
                 Opening Hours
               </span>
             </div>
-            <h2 className="text-4xl font-black uppercase tracking-tighter text-foreground md:text-5xl">
+            <h2 className="text-4xl font-black uppercase tracking-wide text-foreground md:text-5xl">
               When To Find Us
             </h2>
             <p className="max-w-sm text-sm leading-relaxed text-muted-foreground transition-colors duration-300">
@@ -157,7 +157,7 @@ export function BusinessHours() {
               </span>
             </div>
 
-            <h2 className="font-serif text-6xl font-black uppercase leading-none tracking-tight text-foreground xl:text-7xl">
+            <h2 className="font-serif text-6xl font-black uppercase leading-none tracking-wide text-foreground xl:text-7xl">
               When To
               <br />
               Find Us

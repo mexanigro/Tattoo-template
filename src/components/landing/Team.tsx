@@ -79,7 +79,7 @@ export function Team({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-5xl font-black uppercase leading-[0.9] tracking-tighter text-foreground md:text-7xl"
+              className="text-5xl font-black uppercase leading-[1.05] tracking-wide text-foreground md:text-7xl"
             >
               {sectionConfig.subtitle}
             </motion.h2>

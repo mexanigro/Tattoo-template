@@ -52,7 +52,7 @@ export function LegalPage({
         <p className="mb-3 text-[10px] font-black uppercase tracking-[0.35em] text-accent-light">
           Marco legal · {siteConfig.business.legalName}
         </p>
-        <h1 className="font-serif text-4xl font-light tracking-tight text-foreground md:text-5xl">
+        <h1 className="font-serif text-4xl font-normal tracking-wide text-foreground md:text-5xl">
           {TITLES[kind]}
         </h1>
         <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
@@ -66,7 +66,7 @@ export function LegalPage({
         {sections.map((block, idx) => (
           <section key={idx} className="space-y-4">
             {block.title ? (
-              <h2 className="text-lg font-bold tracking-tight text-foreground">
+              <h2 className="text-lg font-bold tracking-wide text-foreground">
                 {block.title}
               </h2>
             ) : null}

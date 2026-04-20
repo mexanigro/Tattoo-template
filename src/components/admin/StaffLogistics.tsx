@@ -161,7 +161,7 @@ export function StaffLogistics() {
                   <Clock className="text-accent-light" size={24} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-black uppercase tracking-tight text-foreground mb-1">{config.scheduleTitle}</h2>
+                  <h2 className="text-xl font-black uppercase tracking-wide text-foreground mb-1">{config.scheduleTitle}</h2>
                   <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Personnel: {selectedStaffMember.name}</p>
                 </div>
               </div>

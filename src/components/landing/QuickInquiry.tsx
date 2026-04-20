@@ -49,7 +49,7 @@ export function QuickInquiry() {
               <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent-light">
                 {sectionConfig.title}
               </p>
-              <h2 className="mb-5 text-4xl font-black uppercase tracking-tighter text-foreground md:text-6xl">
+              <h2 className="mb-5 text-4xl font-black uppercase tracking-wide text-foreground md:text-6xl">
                 {sectionConfig.subtitle}
               </h2>
               <div className="h-px w-16 bg-gradient-to-r from-accent-light to-transparent" />

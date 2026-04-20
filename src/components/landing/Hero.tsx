@@ -47,7 +47,7 @@ export function Hero({ onBookClick }: { onBookClick: () => void }) {
             {[...Array(5)].map((_, i) => (
               <Star key={i} size={12} className="text-accent-light" fill="currentColor" />
             ))}
-            <span className="ml-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/90">
+            <span className="ml-1 font-gothic text-sm text-white/90">
               {siteConfig.brand.tagline}
             </span>
           </motion.div>
@@ -57,14 +57,14 @@ export function Hero({ onBookClick }: { onBookClick: () => void }) {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.15 }}
-            className="mb-6 text-5xl font-black leading-[1] tracking-tighter text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.6)] sm:text-7xl md:text-8xl"
+            className="mb-6 text-5xl font-black leading-[1.05] tracking-wide text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.6)] sm:text-7xl md:text-8xl"
           >
             {hero.titlePrefix}{" "}
-            <em className="not-italic font-serif font-light text-accent-light">
+            <em className="not-italic font-gothic text-accent-light">
               {hero.titleHighlight}
             </em>
             <br />
-            <span className="text-3xl font-semibold tracking-tight text-white/75 sm:text-4xl md:text-5xl">
+            <span className="text-3xl font-semibold tracking-wider text-white/75 sm:text-4xl md:text-5xl">
               {hero.titleSuffix}
             </span>
           </motion.h1>
