@@ -1,104 +1,157 @@
 import React from "react";
-import { ChevronRight, Calendar, Star } from "lucide-react";
+import { ChevronRight, Calendar, Star, Users, Award, Clock } from "lucide-react";
 import { motion } from "motion/react";
 import { siteConfig } from "../../config/site";
+
+const STATS = [
+  { icon: Users,  value: "500+",  label: "Clients Served"  },
+  { icon: Award,  value: "10",    label: "Years of Mastery" },
+  { icon: Star,   value: "5.0",   label: "Average Rating"  },
+  { icon: Clock,  value: "3",     label: "Master Artisans" },
+];
 
 export function Hero({ onBookClick }: { onBookClick: () => void }) {
   const { hero } = siteConfig;
 
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
-      {/* Background — same asset in both themes; overlays handle contrast */}
+    <section className="relative flex min-h-screen items-end overflow-hidden pb-0">
+
+      {/* ── Background ─────────────────────────────────────────────── */}
       <div className="absolute inset-0 z-0">
         <img
           src={hero.backgroundImage}
-          className="absolute inset-0 h-full w-full scale-[1.03] object-cover saturate-[1.02]"
-          alt="Salon atmosphere"
-          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover"
+          alt="Barbershop atmosphere"
+          loading="eager"
           referrerPolicy="no-referrer"
         />
-        {/* Layer 1: cinematic wash — light mode keeps enough density for white type; dark mode lighter so the photo reads */}
-        <div
-          className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-br from-black/52 via-black/26 to-black/54 dark:from-black/26 dark:via-black/14 dark:to-black/36"
-          aria-hidden
-        />
-        {/* Layer 2: anchor legibility at bottom + open sky at top */}
-        <div
-          className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-t from-black/[0.72] via-black/22 to-transparent dark:from-black/42 dark:via-black/14 dark:to-transparent"
-          aria-hidden
-        />
-        {/* Layer 3: ultra-light uniform scrim */}
-        <div
-          className="pointer-events-none absolute inset-0 z-[3] bg-black/[0.08] dark:bg-black/[0.02]"
-          aria-hidden
-        />
+        {/* Cinematic vignette — heavier on sides and top */}
+        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-br from-black/60 via-black/30 to-black/60 dark:from-black/40 dark:via-black/15 dark:to-black/45" aria-hidden />
+        {/* Bottom anchor — fades to background color so stats row merges */}
+        <div className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-t from-background via-black/30 to-transparent" aria-hidden />
+        {/* Subtle left shadow for left-aligned text contrast */}
+        <div className="pointer-events-none absolute inset-0 z-[3] bg-gradient-to-r from-black/40 via-transparent to-transparent" aria-hidden />
       </div>
 
-      <div className="relative z-20 mx-auto max-w-7xl px-6 pt-20 text-center">
+      {/* ── Content ─────────────────────────────────────────────────── */}
+      <div className="relative z-20 mx-auto w-full max-w-7xl px-6 pb-24 pt-40 md:pb-32 md:pt-48">
+        <div className="max-w-3xl">
+
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-white/20 bg-black/30 px-4 py-2 backdrop-blur-md"
+          >
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} size={12} className="text-accent-light" fill="currentColor" />
+            ))}
+            <span className="ml-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/90">
+              {siteConfig.brand.tagline}
+            </span>
+          </motion.div>
+
+          {/* Headline — serif accent word mixed with sans */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.15 }}
+            className="mb-6 text-5xl font-black leading-[1] tracking-tighter text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.6)] sm:text-7xl md:text-8xl"
+          >
+            {hero.titlePrefix}{" "}
+            <em className="not-italic font-serif font-light text-accent-light">
+              {hero.titleHighlight}
+            </em>
+            <br />
+            <span className="text-3xl font-semibold tracking-tight text-white/75 sm:text-4xl md:text-5xl">
+              {hero.titleSuffix}
+            </span>
+          </motion.h1>
+
+          {/* Decorative rule */}
+          <motion.div
+            initial={{ scaleX: 0, opacity: 0 }}
+            animate={{ scaleX: 1, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="mb-6 h-px w-24 origin-left bg-gradient-to-r from-accent-light to-transparent"
+          />
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.5 }}
+            className="mb-10 max-w-xl text-base font-light leading-relaxed text-white/75 md:text-lg"
+          >
+            {hero.subtitle}
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.65 }}
+            className="flex flex-col gap-3 sm:flex-row sm:items-center"
+          >
+            {siteConfig.features.showBooking && (
+              <button
+                type="button"
+                onClick={onBookClick}
+                className="group flex items-center justify-center gap-2.5 rounded-2xl bg-primary px-8 py-4 text-base font-bold text-primary-foreground shadow-xl shadow-black/30 transition-all duration-300 hover:bg-accent-light hover:text-zinc-950 hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-accent/30 active:scale-95 active:translate-y-0"
+              >
+                <Calendar size={18} />
+                <span>{hero.ctaPrimary}</span>
+                <ChevronRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+              </button>
+            )}
+            {siteConfig.features.showServices && (
+              <a
+                href="#services"
+                className="flex items-center justify-center gap-2 rounded-2xl border border-white/25 bg-white/10 px-8 py-4 text-base font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-white/40 hover:bg-white/20 active:scale-95"
+              >
+                {hero.ctaSecondary}
+              </a>
+            )}
+          </motion.div>
+        </div>
+
+        {/* ── Stats row ──────────────────────────────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/25 px-4 py-2 shadow-sm backdrop-blur-md dark:bg-black/35"
+          transition={{ duration: 0.7, delay: 0.85 }}
+          className="mt-16 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 backdrop-blur-md sm:grid-cols-4"
         >
-          <Star className="text-accent-light" size={16} fill="currentColor" />
-          <span className="text-xs font-bold uppercase tracking-[0.2em] text-white dark:text-white/95">
-            {siteConfig.brand.tagline}
-          </span>
+          {STATS.map(({ icon: Icon, value, label }) => (
+            <div
+              key={label}
+              className="flex flex-col items-center gap-1.5 bg-black/20 px-4 py-5 text-center transition-colors duration-200 hover:bg-black/30"
+            >
+              <Icon size={18} className="text-accent-light" />
+              <span className="font-serif text-2xl font-bold text-white">{value}</span>
+              <span className="text-xs font-medium uppercase tracking-widest text-white/55">{label}</span>
+            </div>
+          ))}
         </motion.div>
+      </div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="mb-8 text-6xl font-black leading-[0.9] tracking-tighter text-white drop-shadow-[0_4px_32px_rgba(0,0,0,0.55)] md:text-9xl dark:drop-shadow-[0_4px_28px_rgba(0,0,0,0.35)]"
-        >
-          {hero.titlePrefix}{" "}
-          <span className="text-accent-light">{hero.titleHighlight}</span>
-          <br />
-          {hero.titleSuffix}
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="mx-auto mb-12 max-w-2xl text-lg font-light leading-relaxed text-white/88 dark:text-white/82"
-        >
-          {hero.subtitle}
-        </motion.p>
-
+      {/* ── Scroll indicator ───────────────────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.4, duration: 0.6 }}
+        className="absolute bottom-8 right-8 z-20 hidden flex-col items-center gap-2 md:flex"
+      >
+        <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/40 [writing-mode:vertical-rl]">
+          Scroll
+        </span>
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="flex flex-col items-center justify-center gap-6 sm:flex-row"
-        >
-          {siteConfig.features.showBooking && (
-            <button
-              type="button"
-              onClick={onBookClick}
-              className="group flex w-full items-center justify-center gap-3 rounded-full bg-primary px-10 py-5 text-lg font-black text-primary-foreground shadow-xl shadow-black/35 transition-all duration-300 hover:bg-accent-light hover:text-zinc-950 hover:shadow-lg"
-            >
-              <Calendar size={22} />
-              <span>{hero.ctaPrimary}</span>
-              <ChevronRight className="transition-transform group-hover:translate-x-1" />
-            </button>
-          )}
-          {siteConfig.features.showServices && (
-            <a
-              href="#services"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/40 bg-white/15 px-10 py-5 text-lg font-bold text-white backdrop-blur-md transition-all duration-300 hover:border-white/55 hover:bg-white/25 dark:border-white/35 dark:bg-white/10 dark:hover:bg-white/18"
-            >
-              {hero.ctaSecondary}
-            </a>
-          )}
-        </motion.div>
-      </div>
-
-      <div className="absolute bottom-12 left-1/2 flex -translate-x-1/2 animate-bounce opacity-50">
-        <div className="h-12 w-1 rounded-full bg-gradient-to-b from-accent-light to-transparent" />
-      </div>
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          className="h-10 w-px bg-gradient-to-b from-accent-light/70 to-transparent"
+        />
+      </motion.div>
     </section>
   );
 }
