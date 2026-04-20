@@ -8,6 +8,38 @@ import { Resend } from "resend";
 
 dotenv.config();
 
+// ─── Startup Diagnostics ──────────────────────────────────────────────────────
+// Runs once at boot. Logs which integrations are active vs unconfigured so
+// developers cloning the template immediately know what still needs setup.
+function logStartupStatus() {
+  const tag = "[Template Setup]";
+  const checks = [
+    { key: process.env.GEMINI_API_KEY,         label: "GEMINI_API_KEY",          feature: "AI chat & style consultation" },
+    { key: process.env.STRIPE_SECRET_KEY,       label: "STRIPE_SECRET_KEY",       feature: "Stripe payments" },
+    { key: process.env.STRIPE_WEBHOOK_SECRET,   label: "STRIPE_WEBHOOK_SECRET",   feature: "Stripe webhook verification" },
+    { key: process.env.VITE_STRIPE_PUBLISHABLE_KEY, label: "VITE_STRIPE_PUBLISHABLE_KEY", feature: "Stripe frontend" },
+    { key: process.env.EMAIL_PROVIDER_API_KEY,  label: "EMAIL_PROVIDER_API_KEY",  feature: "Email notifications (Resend)" },
+    { key: process.env.BUSINESS_OWNER_EMAIL,    label: "BUSINESS_OWNER_EMAIL",    feature: "Notification recipient" },
+    { key: process.env.VITE_ADMIN_EMAIL,        label: "VITE_ADMIN_EMAIL",        feature: "Admin panel access" },
+  ];
+
+  console.log(`\n${tag} ─── Service Configuration Status ───`);
+  let allGood = true;
+  for (const { key, label, feature } of checks) {
+    if (key && key.trim() !== "") {
+      console.log(`  ✓  ${label.padEnd(32)} → ${feature}`);
+    } else {
+      console.warn(`  ✗  ${label.padEnd(32)} → ${feature} (DISABLED — add key to .env)`);
+      allGood = false;
+    }
+  }
+  if (allGood) {
+    console.log(`${tag} All integrations configured.\n`);
+  } else {
+    console.warn(`${tag} Some features are disabled. See above for missing keys.\n`);
+  }
+}
+
 const GEMINI_REST_MODEL = "gemini-1.5-flash";
 const GEMINI_REST_BASE = "https://generativelanguage.googleapis.com/v1beta";
 
@@ -57,9 +89,13 @@ async function geminiGenerateContent(
 }
 
 let stripeInstance: Stripe | null = null;
-const getStripe = () => {
+const getStripe = (): Stripe | null => {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key || key.trim() === "") {
+    return null;
+  }
   if (!stripeInstance) {
-    stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY || "PK_PENDING_CONFIG", {
+    stripeInstance = new Stripe(key, {
       apiVersion: "2026-03-25.dahlia" as any,
     });
   }
@@ -221,6 +257,12 @@ async function startServer() {
 
   // Webhook endpoint MUST use raw body for signature verification
   app.post("/api/webhook", express.raw({ type: "application/json" }), async (req, res) => {
+    const stripe = getStripe();
+    if (!stripe) {
+      console.warn("[Template Setup] Missing STRIPE_SECRET_KEY — webhook endpoint disabled.");
+      return res.status(503).json({ error: "Payment service not configured", status: 503 });
+    }
+
     const sig = req.headers["stripe-signature"];
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -231,7 +273,7 @@ async function startServer() {
     let event;
 
     try {
-      event = getStripe().webhooks.constructEvent(req.body, sig, webhookSecret);
+      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
     } catch (err: any) {
       console.error(`Webhook Error: ${err.message}`);
       return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -443,15 +485,17 @@ Be sharp, professional, yet welcoming. Keep answers concise.`;
 
   app.post("/api/create-checkout-session", async (req, res) => {
     try {
-      const stripeKey = process.env.STRIPE_SECRET_KEY;
-      if (!stripeKey || stripeKey === "PK_PENDING_CONFIG") {
-        return res.status(500).json({ 
-          error: "Stripe is not configured. Add STRIPE_SECRET_KEY to environment secrets to enable payments." 
+      const stripe = getStripe();
+      if (!stripe) {
+        console.warn("[Template Setup] Missing STRIPE_SECRET_KEY — checkout session creation disabled.");
+        return res.status(503).json({
+          error: "Payment service not configured",
+          status: 503,
+          details: "Add STRIPE_SECRET_KEY to your .env file to enable payments.",
         });
       }
 
       const { appointmentId, price, name, customerEmail, mode } = req.body;
-      const stripe = getStripe();
 
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
@@ -501,6 +545,7 @@ Be sharp, professional, yet welcoming. Keep answers concise.`;
 
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://localhost:${PORT}`);
+    logStartupStatus();
   });
 }
 

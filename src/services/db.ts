@@ -15,12 +15,22 @@ import {
   setDoc,
   getDoc
 } from 'firebase/firestore';
-import { db, auth } from '../lib/firebase';
+import { db, auth, isFirebaseConfigured } from '../lib/firebase';
 import { Appointment, AppointmentStatus, StaffMember } from '../types';
 import { siteConfig } from '../config/site';
 import { checkAvailability } from '../lib/booking';
 import { format, parse, setMinutes, setHours, startOfDay, addMinutes, isBefore, isAfter } from 'date-fns';
 import { SCHEDULING_CONFIG } from '../constants';
+
+// Guard: if Firebase is not configured, all db operations return safe empty defaults.
+function assertFirebase(): void {
+  if (!isFirebaseConfigured) {
+    throw new Error(
+      "[Template Setup] Firebase is not configured. " +
+      "Replace firebase-applet-config.json with your project credentials."
+    );
+  }
+}
 
 enum OperationType {
   CREATE = 'create',
@@ -66,6 +76,10 @@ const APPOINTMENTS_COLLECTION = 'appointments';
 export const dbService = {
   // Real-time listener for appointments
   subscribeToAppointments: (callback: (appointments: Appointment[]) => void) => {
+    if (!isFirebaseConfigured) {
+      console.warn("[Template Setup] Firebase not configured — appointment subscription skipped.");
+      return () => {};
+    }
     const q = query(
       collection(db, APPOINTMENTS_COLLECTION),
       orderBy('createdAt', 'desc')
@@ -88,6 +102,7 @@ export const dbService = {
   },
 
   getAppointments: async (): Promise<Appointment[]> => {
+    if (!isFirebaseConfigured) return [];
     try {
       const q = query(collection(db, APPOINTMENTS_COLLECTION), orderBy('createdAt', 'desc'));
       const snapshot = await getDocs(q);
@@ -107,6 +122,7 @@ export const dbService = {
   },
 
   getAppointmentsForDate: async (date: string): Promise<Appointment[]> => {
+    if (!isFirebaseConfigured) return [];
     try {
       const q = query(
         collection(db, APPOINTMENTS_COLLECTION), 
@@ -153,6 +169,7 @@ export const dbService = {
   },
   
   saveAppointment: async (appointment: Omit<Appointment, 'id' | 'createdAt'>): Promise<string> => {
+    assertFirebase();
     try {
       return await runTransaction(db, async (transaction) => {
         const dateStr = appointment.date;
@@ -172,7 +189,7 @@ export const dbService = {
         const overrideDoc = await transaction.get(overrideRef);
         const staticStaff = siteConfig.staff.find(b => b.id === staffId);
         
-        if (!staticStaff) throw new Error("Personnel not found in static registry.");
+        if (!staticStaff) throw new Error("Staff member not found. Please refresh and try again.");
         
         const staffMember: StaffMember = !overrideDoc.exists() ? staticStaff : {
           ...staticStaff,
@@ -196,7 +213,7 @@ export const dbService = {
         });
 
         if (conflict) {
-          throw new Error("Temporal conflict detected. Slot is already allocated within mission bounds.");
+          throw new Error("This time slot is no longer available. Please select a different time.");
         }
 
         // Basic availability check (breaks, opening hours, etc)
@@ -205,7 +222,7 @@ export const dbService = {
            throw new Error(validation.reason || "Slot no longer available.");
         }
 
-        // 4. Update Manifest and Commit deployment
+        // 4. Update manifest and save appointment
         const docRef = doc(collection(db, APPOINTMENTS_COLLECTION));
         transaction.set(docRef, {
           ...appointment,
@@ -225,6 +242,7 @@ export const dbService = {
   },
 
   getStaffOverrides: async (): Promise<Record<string, any>> => {
+    if (!isFirebaseConfigured) return {};
     try {
       const snapshot = await getDocs(collection(db, 'staff_overrides'));
       const overrides: Record<string, any> = {};
@@ -239,6 +257,7 @@ export const dbService = {
   },
 
   saveStaffOverride: async (staffId: string, data: any): Promise<void> => {
+    assertFirebase();
     try {
       await setDoc(doc(db, 'staff_overrides', staffId), data, { merge: true });
     } catch (error) {
@@ -248,6 +267,7 @@ export const dbService = {
   },
   
   updateAppointment: async (id: string, updates: Partial<Appointment>): Promise<void> => {
+    assertFirebase();
     try {
       const docRef = doc(db, APPOINTMENTS_COLLECTION, id);
       await updateDoc(docRef, updates);
@@ -257,6 +277,7 @@ export const dbService = {
   },
   
   deleteAppointment: async (id: string): Promise<void> => {
+    assertFirebase();
     try {
       const docRef = doc(db, APPOINTMENTS_COLLECTION, id);
       await deleteDoc(docRef);
