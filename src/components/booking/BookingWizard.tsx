@@ -379,7 +379,7 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
                   >
                     <div>
                       <h4 className="font-bold text-foreground transition-colors duration-200 group-hover:text-accent-light">{s.name}</h4>
-                      <p className="mt-1 text-xs text-muted-foreground">{s.duration} min · <span className="font-semibold text-foreground">${s.price}</span></p>
+                      <p className="mt-1 text-xs text-muted-foreground">{s.duration} min · <span className="font-semibold text-foreground">{s.price === 0 ? "Free" : `$${s.price}`}</span></p>
                     </div>
                     <ChevronRight size={18} className="shrink-0 text-muted-foreground/40 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-accent-light" />
                   </button>
@@ -530,7 +530,7 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
                        <p className="mb-1 text-[10px] font-black uppercase tracking-widest text-accent-light">Appointment Summary</p>
                        <h4 className="text-xl font-black uppercase tracking-tight text-foreground">{selectedService?.name}</h4>
                     </div>
-                    <span className="font-black text-foreground">${selectedService?.price}</span>
+                    <span className="font-black text-foreground">{selectedService?.price === 0 ? "Free" : `$${selectedService?.price}`}</span>
                  </div>
                  <div className="grid grid-cols-2 gap-4 border-t border-border pt-4 text-xs">
                     <div className="flex items-center gap-2 text-muted-foreground">

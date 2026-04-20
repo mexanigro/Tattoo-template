@@ -27,8 +27,8 @@ export const tattooPreset: NichePreset = {
     titleHighlight: "OUR CANVAS",
     titleSuffix: "PERMANENT ART FOR THE BOLD",
     subtitle:
-      "Elite tattoo artists. Custom designs crafted from consultation to completion. Every line, every shade — executed with surgical precision and artistic mastery.",
-    ctaPrimary: "BOOK YOUR CONSULTATION",
+      "Every piece begins with a free in-person consultation — no commitment, no deposit. Meet your artist, define the vision, then book your session. Custom art executed with surgical precision.",
+    ctaPrimary: "BOOK FREE CONSULT",
     ctaSecondary: "VIEW PORTFOLIO",
     // Tattoo parlor interior — neon lights, displayed flash art, studio atmosphere
     backgroundImage:
@@ -64,45 +64,70 @@ export const tattooPreset: NichePreset = {
 
   // ─── Services ────────────────────────────────────────────────────────────────
   // CRITICAL: services[i] maps 1:1 to sections.services.images[i].
-  // If you add a service here, add its corresponding image below.
+  // If you add or reorder a service here, update sections.services.images below.
+  //
+  // Pricing model:
+  //   services[0] Free Consultation   → $0 flat — no charge, no commitment
+  //   services[1] Custom Design       → $180/hr — billed hourly per session
+  //   services[2] Fine Line           → $150/hr — billed hourly per session
+  //   services[3] Black & Grey        → $200/hr — billed hourly per session
+  //   services[4] Cover-Up & Rework   → $160/hr — billed hourly per session
+  //   services[5] Flash & Small       → $120 flat — shop minimum, fixed rate
+  //   services[6] Precision Piercing  → $80 flat — fixed rate
   services: [
+    {
+      id: "consultation",
+      name: "Free Consultation",
+      description:
+        "Start here — no charge, no commitment. Meet your artist in person for a 30–60 min session to review portfolio work, discuss your concept, choose placement and style, and map out the full project before a single deposit is made.",
+      duration: 60,
+      price: 0,
+    },
     {
       id: "custom-design",
       name: "Custom Design",
       description:
-        "A fully bespoke tattoo conceived from your concept. We begin with an in-depth consultation, develop original artwork, and execute it with uncompromising precision. No flash, no templates — only original art.",
+        "Fully original artwork conceived around your vision. Billed at $180/hr — most custom pieces run 1–4 sessions depending on size and complexity. Every piece starts with the free consultation and includes sketch approval before your session.",
       duration: 180,
-      price: 350,
+      price: 180,
     },
     {
       id: "fine-line",
       name: "Fine Line & Minimalism",
       description:
-        "Single-needle precision for ultra-delicate line work, micro-realism, and minimalist compositions. Ideal for subtle, sophisticated statements — intricate details with the lightest possible touch.",
+        "Single-needle precision for ultra-delicate linework, micro-realism, and minimalist compositions. Billed at $150/hr. Smaller minimalist designs under 2 inches may be quoted at a flat rate — confirm during your free consultation.",
       duration: 120,
-      price: 280,
+      price: 150,
     },
     {
       id: "black-grey-realism",
       name: "Black & Grey Realism",
       description:
-        "Photorealistic portraiture and hyper-detailed imagery rendered entirely in black and grey. Masterful shading, dimensional depth, and cinematic contrast that ages beautifully over time.",
+        "Hyper-realistic portraiture and cinematic imagery in black & grey. Billed at $200/hr — large-scale realism is spread across multiple sessions for optimal ink saturation and healing. Requires a free consultation.",
       duration: 240,
-      price: 450,
+      price: 200,
     },
     {
       id: "cover-up",
       name: "Cover-Up & Rework",
       description:
-        "Transform an unwanted tattoo into a work of art. Our specialists assess your existing ink and engineer a custom design that fully covers or creatively integrates the original piece.",
+        "Transform unwanted ink into original art. Requires a mandatory free consultation to assess coverage needs. Billed at $160/hr — most cover-ups take 2–3 sessions. A $100 design deposit is held after consultation and applied to your final bill.",
       duration: 180,
-      price: 400,
+      price: 160,
+    },
+    {
+      id: "flash-small",
+      name: "Flash & Small Pieces",
+      description:
+        "Pre-drawn flash designs and small original pieces under 3 inches. Flat studio minimum starting at $120 — what you see is what you pay, no hourly billing. Perfect for first-timers or adding to an existing collection without a consultation.",
+      duration: 60,
+      price: 120,
     },
     {
       id: "piercing",
       name: "Precision Piercing",
       description:
-        "Professional piercing services using implant-grade titanium and surgical steel. From classic lobes to high-cartilage and surface anchors — all placements performed with surgical accuracy and full aftercare guidance.",
+        "Professional piercing using implant-grade titanium and surgical steel. From classic lobes to high-cartilage and surface anchors — flat rate, same-day service, full aftercare kit included.",
       duration: 30,
       price: 80,
     },
@@ -246,18 +271,21 @@ export const tattooPreset: NichePreset = {
     services: {
       title: "Craft & Discipline",
       subtitle: "Our Services",
-      // ACTION shots — one per service, same order as services[].
-      // Rule: each image must show an artist actively tattooing or performing the service.
-      // services[0] Custom Design         → artist drawing/tattooing a detailed custom piece
-      // services[1] Fine Line             → needle close-up on delicate fine line work
-      // services[2] Black & Grey Realism  → artist shading a realistic portrait tattoo
-      // services[3] Cover-Up & Rework     → artist working over an existing tattoo
-      // services[4] Precision Piercing    → professional piercing-related close-up
+      // ACTION / ENVIRONMENT shots — one per service, same order as services[].
+      // services[0] Free Consultation     → artist reviewing designs with client in studio
+      // services[1] Custom Design         → artist drawing/tattooing a detailed custom piece
+      // services[2] Fine Line             → needle close-up on delicate fine line work
+      // services[3] Black & Grey Realism  → artist shading a realistic portrait tattoo
+      // services[4] Cover-Up & Rework     → artist working over an existing tattoo
+      // services[5] Flash & Small Pieces  → close-up of precise small tattoo work
+      // services[6] Precision Piercing    → professional piercing-related close-up
       images: [
+        "https://images.unsplash.com/photo-1775135981378-4e7c1767436d?auto=format&fit=crop&q=80&w=600",
         "https://images.unsplash.com/photo-1753283463956-57f16faf217c?auto=format&fit=crop&q=80&w=600",
         "https://images.unsplash.com/photo-1769605767681-749db570b426?auto=format&fit=crop&q=80&w=600",
         "https://images.unsplash.com/photo-1769605767707-80909ec160cc?auto=format&fit=crop&q=80&w=600",
         "https://images.unsplash.com/photo-1769605767720-6b512d96aa4e?auto=format&fit=crop&q=80&w=600",
+        "https://images.unsplash.com/photo-1710367847914-a1c8d2c5aa63?auto=format&fit=crop&q=80&w=600",
         "https://images.unsplash.com/photo-1692220361348-70bc089b3e6d?auto=format&fit=crop&q=80&w=600",
       ],
     },
@@ -316,8 +344,8 @@ export const tattooPreset: NichePreset = {
         "Ready to bring your vision to life? Send us a message, attach any reference images, and one of our artists will reach out to schedule your consultation.",
     },
     booking: {
-      title: "Book a Session",
-      tagline: "Where Skin Becomes Art — Schedule Your Masterpiece",
+      title: "Book Your Visit",
+      tagline: "Start with a free consult — then schedule your session when you're ready.",
       steps: {
         service: "Service",
         staff: "Artist",
@@ -327,12 +355,12 @@ export const tattooPreset: NichePreset = {
       },
       aiConsultant: {
         title: "Ink Intelligence",
-        subtitle: "Need Design Direction?",
+        subtitle: "Not Sure Where to Start?",
         description:
-          "Ask our AI specialist to help you refine your concept, choose the right style, or find the ideal artist for your vision.",
+          "Describe your idea and our AI specialist will recommend the right service, style, and artist — so you arrive at your consultation fully prepared.",
         agentLabel: "Creative Consultant",
         placeholder:
-          "Describe your idea (e.g. 'A fine line geometric wolf on my forearm, minimal and clean')...",
+          "Describe your idea (e.g. 'A fine line botanical on my wrist, minimal and delicate')...",
       },
       success: {
         title: "Success",
