@@ -1,20 +1,23 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Premium Tattoo Studio Template
 
-# Run and deploy your AI Studio app
+A high-end tattoo and piercing studio template built with React, Vite, Tailwind CSS, Firebase, and an AI-assisted consultation flow.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/9e7fef67-4fb7-47d2-a07c-c0a93f69e20c
+- Premium tattoo studio landing page
+- Artist profiles with portfolios and weekly schedules
+- Real-time booking flow
+- Inquiry form and AI consultation chat
+- Gallery, testimonials, legal pages, and admin dashboard
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
+**Prerequisites:** Node.js
 
+1. Install dependencies: `npm install`
+2. Copy `.env.example` and configure the required environment variables
+3. Start the local server: `npm run dev`
 
-1. Install dependencies:
-   `npm install`
-2. Copy [.env.example](.env.example) and add server-side credentials where needed (AI routes read from the environment loaded by `tsx server.ts`, not from the browser bundle)
-3. Run the app:
-   `npm run dev`
+## Configuration
+
+Business content is driven by `src/config/site.ts` and the active preset in `src/config/presets/`.

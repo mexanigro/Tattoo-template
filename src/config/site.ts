@@ -1,6 +1,5 @@
 /// <reference types="vite/client" />
 import type { BusinessNiche, NichePreset, SiteConfig } from "../types";
-import { barberiaPreset } from "./presets/barberia";
 import { esteticaPreset } from "./presets/estetica";
 import { abogadoPreset } from "./presets/abogado";
 import { tattooPreset } from "./presets/tattoo";
@@ -13,7 +12,6 @@ const ACTIVE_NICHE: BusinessNiche = "tattoo";
 
 // ─── Preset Registry ─────────────────────────────────────────────────────────
 const PRESETS: Record<BusinessNiche, NichePreset> = {
-  barberia: barberiaPreset,
   estetica: esteticaPreset,
   abogado: abogadoPreset,
   tattoo: tattooPreset,

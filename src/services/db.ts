@@ -91,7 +91,7 @@ export const dbService = {
         return {
           ...data,
           id: doc.id,
-          staffId: data.staffId ?? (data as { barberId?: string }).barberId ?? '',
+          staffId: data.staffId ?? '',
           createdAt: data.createdAt?.toDate() || new Date(),
         } as Appointment;
       });
@@ -111,7 +111,7 @@ export const dbService = {
         return {
           ...data,
           id: doc.id,
-          staffId: data.staffId ?? (data as { barberId?: string }).barberId ?? '',
+          staffId: data.staffId ?? '',
           createdAt: data.createdAt?.toDate() || new Date(),
         } as Appointment;
       });
@@ -135,7 +135,7 @@ export const dbService = {
         return {
           ...data,
           id: doc.id,
-          staffId: data.staffId ?? (data as { barberId?: string }).barberId ?? '',
+          staffId: data.staffId ?? '',
           createdAt: data.createdAt?.toDate() || new Date(),
         } as Appointment;
       });

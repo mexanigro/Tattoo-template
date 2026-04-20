@@ -21,7 +21,7 @@ export function Hero({ onBookClick }: { onBookClick: () => void }) {
         <img
           src={hero.backgroundImage}
           className="absolute inset-0 h-full w-full object-cover"
-          alt="Barbershop atmosphere"
+          alt={`${siteConfig.brand.name} studio atmosphere`}
           loading="eager"
           referrerPolicy="no-referrer"
         />

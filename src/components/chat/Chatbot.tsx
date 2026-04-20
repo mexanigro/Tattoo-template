@@ -23,7 +23,7 @@ export function Chatbot() {
       {
         id: "init",
         role: "model",
-        text: `Welcome to **${siteConfig.brand.name}**. How can I assist you with your grooming needs today?`,
+        text: `Welcome to **${siteConfig.brand.name}**. How can I assist you with your tattoo, piercing, or consultation needs today?`,
       },
     ]);
   }, []);
@@ -194,7 +194,7 @@ export function Chatbot() {
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask about services or styling..."
+                  placeholder="Ask about services, artists, designs, or aftercare..."
                   className="w-full rounded-full border border-border bg-background py-3.5 pl-5 pr-14 text-sm font-medium text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30 transition-all"
                 />
                 <button
