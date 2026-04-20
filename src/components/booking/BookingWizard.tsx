@@ -19,7 +19,7 @@ const fieldWithIcon =
 const fieldAi =
   "flex-1 rounded-xl border border-border bg-muted/50 px-3 py-3 text-xs text-foreground outline-none transition-all placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30 dark:bg-muted/30";
 const btnPrimaryFull =
-  "mt-4 flex w-full items-center justify-center gap-3 rounded-2xl bg-primary p-5 font-black uppercase tracking-widest text-primary-foreground shadow-md transition-all duration-300 hover:bg-accent-light hover:text-zinc-950 disabled:cursor-not-allowed disabled:bg-secondary disabled:text-muted-foreground";
+  "mt-4 flex w-full items-center justify-center gap-2.5 rounded-2xl bg-primary py-4 text-sm font-bold text-primary-foreground shadow-md shadow-accent/20 transition-all duration-300 hover:bg-accent-light hover:text-zinc-950 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/25 active:scale-95 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0";
 
 export function BookingWizard({ onClose }: { onClose: () => void }) {
   const { services: SERVICES, staff: STAFF, brand, payment: PAYMENT_CONFIG, sections } = siteConfig;
@@ -275,13 +275,17 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="flex flex-col h-full max-h-[90vh]">
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-           <h2 className="text-2xl font-black uppercase tracking-tight text-foreground">{config.title}</h2>
-           <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{config.tagline}</p>
+          <p className="mb-0.5 text-xs font-bold uppercase tracking-[0.25em] text-accent-light">{config.tagline}</p>
+          <h2 className="font-serif text-2xl font-bold text-foreground">{config.title}</h2>
         </div>
-        <button type="button" onClick={handleClose} className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
-          <X size={24} />
+        <button
+          type="button"
+          onClick={handleClose}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
+        >
+          <X size={18} />
         </button>
       </div>
 
@@ -371,13 +375,13 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
                     type="button"
                     key={s.id}
                     onClick={() => { setSelectedService(s); setStep("staff"); }}
-                    className="group flex items-center justify-between rounded-2xl border border-border bg-card p-5 text-left shadow-sm transition-all hover:border-accent-light/50"
+                    className="group flex items-center justify-between rounded-2xl border border-border bg-card p-5 text-left shadow-sm transition-all duration-200 hover:border-accent/30 hover:shadow-md"
                   >
                     <div>
-                      <h4 className="font-bold text-foreground transition-colors group-hover:text-accent-light">{s.name}</h4>
-                      <p className="mt-1 text-xs text-muted-foreground">{s.duration} mins • ${s.price}</p>
+                      <h4 className="font-bold text-foreground transition-colors duration-200 group-hover:text-accent-light">{s.name}</h4>
+                      <p className="mt-1 text-xs text-muted-foreground">{s.duration} min · <span className="font-semibold text-foreground">${s.price}</span></p>
                     </div>
-                    <ChevronRight size={20} className="text-muted-foreground transition-colors group-hover:text-accent-light" />
+                    <ChevronRight size={18} className="shrink-0 text-muted-foreground/40 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-accent-light" />
                   </button>
                 ))}
               </div>
@@ -412,7 +416,7 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-bold text-foreground transition-colors group-hover:text-accent-light">Any Available Specialist</h4>
-                    <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Maximum Operational Flexibility</p>
+                    <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">First available at your chosen time</p>
                   </div>
                   <ChevronRight size={20} className="text-muted-foreground transition-colors group-hover:text-accent-light" />
                 </button>
@@ -424,16 +428,16 @@ export function BookingWizard({ onClose }: { onClose: () => void }) {
                     type="button"
                     key={b.id}
                     onClick={() => { setSelectedStaff(b); setAnySpecialist(false); setStep("datetime"); }}
-                    className="group flex items-center gap-5 rounded-2xl border border-border bg-card p-4 text-left shadow-sm transition-all hover:border-accent-light/50"
+                    className="group flex items-center gap-4 rounded-2xl border border-border bg-card p-4 text-left shadow-sm transition-all duration-200 hover:border-accent/30 hover:shadow-md"
                   >
-                    <div className="h-16 w-16 overflow-hidden rounded-xl grayscale transition-all group-hover:grayscale-0">
-                      <img src={b.photoUrl} className="h-full w-full object-cover" alt={b.name} />
+                    <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl grayscale transition-all duration-300 group-hover:grayscale-0">
+                      <img src={b.photoUrl} className="h-full w-full object-cover" alt={b.name} loading="lazy" referrerPolicy="no-referrer" />
                     </div>
-                    <div className="flex-1">
-                      <h4 className="font-bold text-foreground transition-colors group-hover:text-accent-light">{b.name}</h4>
-                      <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{b.specialty}</p>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-bold text-foreground transition-colors duration-200 group-hover:text-accent-light">{b.name}</h4>
+                      <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{b.specialty}</p>
                     </div>
-                    <ChevronRight size={20} className="text-muted-foreground transition-colors group-hover:text-accent-light" />
+                    <ChevronRight size={16} className="shrink-0 text-muted-foreground/40 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-accent-light" />
                   </button>
                 ))}
               </div>

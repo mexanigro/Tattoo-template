@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "motion/react";
-import { Link2, LayoutGrid } from "lucide-react";
+import { ArrowRight, Images } from "lucide-react";
 import { siteConfig } from "../../config/site";
 
 export function Gallery({ onViewFull }: { onViewFull: () => void }) {
@@ -9,45 +9,97 @@ export function Gallery({ onViewFull }: { onViewFull: () => void }) {
   const previewImages = gallery.slice(0, 6);
 
   return (
-    <section id="gallery" className="bg-background px-6 py-24 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto text-center">
-        <div className="text-center mb-16">
-          <h2 className="text-accent-light font-bold uppercase tracking-[0.3em] text-xs mb-4">{sectionConfig.title}</h2>
-          <h3 className="text-4xl font-black uppercase tracking-tighter text-foreground md:text-5xl">{sectionConfig.subtitle}</h3>
+    <section id="gallery" className="bg-card px-6 py-28 transition-colors duration-300">
+      <div className="mx-auto max-w-7xl">
+
+        {/* ── Section header ──────────────────────────────────────── */}
+        <div className="mb-14 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent-light"
+            >
+              {sectionConfig.title}
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl font-black uppercase tracking-tighter text-card-foreground md:text-6xl"
+            >
+              {sectionConfig.subtitle}
+            </motion.h2>
+          </div>
+
+          <motion.button
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            onClick={onViewFull}
+            className="group flex shrink-0 items-center gap-2.5 self-start rounded-xl border border-border bg-background px-5 py-3 text-sm font-semibold text-foreground transition-all duration-300 hover:border-accent/30 hover:text-accent-light md:self-auto"
+          >
+            <Images size={16} />
+            <span>View all {gallery.length} photos</span>
+            <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+          </motion.button>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+        {/* ── Preview grid ────────────────────────────────────────── */}
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-4">
           {previewImages.map((src, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="group aspect-[4/3] overflow-hidden rounded-3xl border border-border bg-muted/30 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:bg-transparent dark:shadow-none dark:hover:shadow-elevated"
+              transition={{ delay: i * 0.08 }}
+              onClick={onViewFull}
+              className="group relative cursor-pointer overflow-hidden rounded-2xl border border-border bg-muted/30 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl lg:rounded-3xl"
             >
-              <img
-                src={src}
-                className="h-full w-full object-cover transition-all duration-700 contrast-[1.02] saturate-[1.03] group-hover:scale-[1.03]"
-                alt={`Portfolio piece ${i + 1}`}
-                loading="lazy"
-                referrerPolicy="no-referrer"
-              />
+              <div className="aspect-[4/3]">
+                <img
+                  src={src}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+                  alt={`Portfolio work ${i + 1}`}
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              {/* Hover overlay */}
+              <div className="absolute inset-0 flex items-end justify-between bg-gradient-to-t from-black/70 via-transparent to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white/70">
+                  Work {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm">
+                  <ArrowRight size={12} className="text-white" />
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
 
-        <motion.button
-          initial={{ opacity: 0, y: 20 }}
+        {/* ── CTA row ─────────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          onClick={onViewFull}
-          className="group relative inline-flex items-center gap-4 overflow-hidden rounded-2xl border border-border bg-secondary px-10 py-5 font-black uppercase tracking-[0.2em] text-secondary-foreground shadow-elevated transition-all duration-300 hover:border-accent-light hover:bg-muted"
+          transition={{ delay: 0.3 }}
+          className="mt-10 flex justify-center"
         >
-          <LayoutGrid size={20} className="text-accent-light group-hover:scale-125 transition-transform" />
-          <span>View Full Manifest</span>
-          <div className="absolute inset-0 bg-accent-light/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-        </motion.button>
+          <button
+            onClick={onViewFull}
+            className="group flex items-center gap-3 rounded-2xl bg-primary px-10 py-4 text-sm font-bold text-primary-foreground shadow-md shadow-accent/20 transition-all duration-300 hover:bg-accent-light hover:text-zinc-950 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/30 active:scale-95"
+          >
+            <Images size={16} />
+            <span>Explore the Full Portfolio</span>
+            <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+          </button>
+        </motion.div>
+
       </div>
     </section>
   );

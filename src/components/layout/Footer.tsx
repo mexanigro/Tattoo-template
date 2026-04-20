@@ -1,159 +1,214 @@
 import React from "react";
 import * as Icons from "lucide-react";
-import { MapPin, Phone, Mail, Instagram, Facebook, Twitter } from "lucide-react";
+import { MapPin, Phone, Mail, Instagram, Facebook, Twitter, Calendar, ArrowRight } from "lucide-react";
 import { siteConfig } from "../../config/site";
 import { LEGAL_ROUTES, type LegalDocKind } from "../../config/legalContent";
 import type { PublicShellPage } from "../../types";
 import { useAdminAccess } from "../../hooks/useAdminAccess";
 
-export function Footer({ 
-  onAdminClick, 
+export function Footer({
+  onAdminClick,
   onLegalNavigate,
-  onPageChange
-}: { 
-  onAdminClick: () => void, 
-  onLegalNavigate: (policy: LegalDocKind) => void,
-  onPageChange: (page: PublicShellPage) => void
+  onPageChange,
+  onBookClick,
+}: {
+  onAdminClick: () => void;
+  onLegalNavigate: (policy: LegalDocKind) => void;
+  onPageChange: (page: PublicShellPage) => void;
+  onBookClick?: () => void;
 }) {
   const { contact, brand } = siteConfig;
   const { user, loading: authLoading, isAdmin } = useAdminAccess();
-  /** Owner entry: show before login; hide when a non-admin is signed in (bunker stays hidden). */
   const showAdminNavLink = !authLoading && (!user || isAdmin);
   const BrandIcon = (Icons as any)[brand.logoIconName || "Scissors"] || Icons.Scissors;
 
+  const navLinks = [
+    { label: "Our Services", page: "landing" as PublicShellPage, enabled: siteConfig.features.showServices },
+    { label: "The Team", page: "landing" as PublicShellPage, enabled: siteConfig.features.showTeam },
+    { label: "Why Choose Us", page: "landing" as PublicShellPage, enabled: siteConfig.features.showWhyChooseUs },
+    { label: "Portfolio", page: "gallery" as PublicShellPage, enabled: siteConfig.features.showGallery },
+    { label: "Testimonials", page: "landing" as PublicShellPage, enabled: siteConfig.features.showTestimonials },
+    { label: "Contact", page: "landing" as PublicShellPage, enabled: siteConfig.features.showInquiry },
+    { label: "Location", page: "landing" as PublicShellPage, enabled: siteConfig.features.showLocation },
+  ].filter((l) => l.enabled);
+
   return (
-    <footer className="border-t border-border bg-muted py-20 px-6 transition-colors duration-300 dark:bg-background">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16 lg:items-start">
-        <div className="space-y-6">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-accent-light rounded flex items-center justify-center">
-              <BrandIcon className="text-zinc-950" size={18} />
+    <footer className="border-t border-border bg-muted transition-colors duration-300 dark:bg-background">
+
+      {/* ── CTA Strip ───────────────────────────────────────────────── */}
+      {siteConfig.features.showBooking && onBookClick && (
+        <div className="border-b border-border bg-card px-6 py-12 transition-colors duration-300">
+          <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 md:flex-row">
+            <div>
+              <p className="mb-1 text-xs font-bold uppercase tracking-[0.3em] text-accent-light">
+                Reserve Your Seat
+              </p>
+              <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl">
+                Ready for your next look?
+              </h2>
             </div>
-            <button 
-              className="text-xl font-bold uppercase tracking-tighter text-foreground transition-colors duration-300 hover:text-accent-light"
-              onClick={() => onPageChange("landing")}
-            >
-              {brand.name}
-            </button>
-          </div>
-          <p className="max-w-xs text-sm leading-relaxed text-muted-foreground transition-colors duration-300">
-            {brand.tagline}
-          </p>
-          <div className="flex gap-4">
-            {contact.social.instagram && (
-              <a href={contact.social.instagram} target="_blank" rel="noopener noreferrer" className="rounded-full bg-secondary p-2 text-muted-foreground transition-colors duration-300 hover:text-accent-light">
-                <Instagram size={18} />
-              </a>
-            )}
-            {contact.social.facebook && (
-              <a href={contact.social.facebook} target="_blank" rel="noopener noreferrer" className="rounded-full bg-secondary p-2 text-muted-foreground transition-colors duration-300 hover:text-accent-light">
-                <Facebook size={18} />
-              </a>
-            )}
-            {contact.social.twitter && (
-              <a href={contact.social.twitter} target="_blank" rel="noopener noreferrer" className="rounded-full bg-secondary p-2 text-muted-foreground transition-colors duration-300 hover:text-accent-light">
-                <Twitter size={18} />
-              </a>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <h4 className="mb-6 text-sm font-bold uppercase tracking-widest text-foreground">Explore</h4>
-          <ul className="space-y-4 text-sm text-muted-foreground transition-colors duration-300">
-            {siteConfig.features.showServices && (
-              <li><button onClick={() => onPageChange("landing")} className="hover:text-accent-light transition-colors cursor-pointer">Our Services</button></li>
-            )}
-            {siteConfig.features.showTeam && (
-              <li><button onClick={() => onPageChange("landing")} className="hover:text-accent-light transition-colors cursor-pointer">The Team</button></li>
-            )}
-            {siteConfig.features.showWhyChooseUs && (
-              <li><button onClick={() => onPageChange("landing")} className="hover:text-accent-light transition-colors cursor-pointer">Why Choose Us</button></li>
-            )}
-            {siteConfig.features.showGallery && (
-              <li><button onClick={() => onPageChange("gallery")} className="hover:text-accent-light transition-colors cursor-pointer">Portfolio</button></li>
-            )}
-            {siteConfig.features.showTestimonials && (
-              <li><button onClick={() => onPageChange("landing")} className="hover:text-accent-light transition-colors cursor-pointer">Testimonials</button></li>
-            )}
-            {siteConfig.features.showInquiry && (
-              <li><button onClick={() => onPageChange("landing")} className="hover:text-accent-light transition-colors cursor-pointer">Contact</button></li>
-            )}
-            {siteConfig.features.showLocation && (
-              <li><button onClick={() => onPageChange("landing")} className="hover:text-accent-light transition-colors cursor-pointer">Location</button></li>
-            )}
-          </ul>
-        </div>
-
-        {/* Column 3 — Contact (fills desktop; stacks cleanly on mobile/tablet) */}
-        <div>
-          <h4 className="mb-6 text-sm font-bold uppercase tracking-widest text-foreground">Contact</h4>
-          <ul className="space-y-4 text-sm text-muted-foreground transition-colors duration-300">
-            <li className="flex items-start gap-2">
-              <MapPin size={14} className="mt-0.5 shrink-0 text-accent-light" />
-              <span>{contact.address.street}, {contact.address.district}, {contact.address.cityStateZip}</span>
-            </li>
-            <li>
-              <a href={`tel:${contact.phone}`} className="flex items-center gap-2 transition-colors hover:text-accent-light">
-                <Phone size={14} className="shrink-0 text-accent-light" />
-                {contact.phone}
-              </a>
-            </li>
-            <li>
-              <a href={`mailto:${contact.email}`} className="flex items-center gap-2 transition-colors hover:text-accent-light">
-                <Mail size={14} className="shrink-0 text-accent-light" />
-                {contact.email}
-              </a>
-            </li>
-          </ul>
-        </div>
-
-      </div>
-      
-      <div className="mx-auto mt-20 flex max-w-7xl flex-col items-center justify-between gap-4 border-t border-border pt-8 text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-300 md:flex-row">
-        <p>© 2026 {brand.name}. All Rights Reserved.</p>
-        <div className="flex flex-wrap justify-center gap-6">
-          <a
-            href={LEGAL_ROUTES.privacy}
-            onClick={(e) => {
-              e.preventDefault();
-              onLegalNavigate("privacy");
-            }}
-            className="cursor-pointer transition-colors hover:text-accent-light"
-          >
-            Privacy Policy
-          </a>
-          <a
-            href={LEGAL_ROUTES.terms}
-            onClick={(e) => {
-              e.preventDefault();
-              onLegalNavigate("terms");
-            }}
-            className="cursor-pointer transition-colors hover:text-accent-light"
-          >
-            Terms & Conditions
-          </a>
-          <a
-            href={LEGAL_ROUTES.cancellation}
-            onClick={(e) => {
-              e.preventDefault();
-              onLegalNavigate("cancellation");
-            }}
-            className="cursor-pointer transition-colors hover:text-accent-light"
-          >
-            Cancellation Policy
-          </a>
-          {showAdminNavLink ? (
             <button
-              type="button"
-              onClick={onAdminClick}
-              className="cursor-pointer hover:text-accent-light transition-colors"
+              onClick={onBookClick}
+              className="group flex shrink-0 items-center gap-2.5 rounded-2xl bg-primary px-8 py-4 text-sm font-bold text-primary-foreground shadow-md shadow-accent/20 transition-all duration-300 hover:bg-accent-light hover:text-zinc-950 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/25 active:scale-95"
             >
-              Admin Panel
+              <Calendar size={16} />
+              <span>Book an Appointment</span>
+              <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
             </button>
-          ) : null}
+          </div>
+        </div>
+      )}
+
+      {/* ── Main footer body ────────────────────────────────────────── */}
+      <div className="mx-auto max-w-7xl px-6 py-16">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-16">
+
+          {/* Brand column */}
+          <div className="space-y-6">
+            <button
+              onClick={() => onPageChange("landing")}
+              className="group flex items-center gap-2.5 outline-none"
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-light shadow-md shadow-accent/20 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-accent/35">
+                <BrandIcon className="text-zinc-950" size={20} />
+              </div>
+              <span className="font-serif text-xl font-bold tracking-wide text-foreground transition-colors duration-300 group-hover:text-accent-light">
+                {brand.name}
+              </span>
+            </button>
+
+            <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
+              {brand.tagline}
+            </p>
+
+            <div className="flex gap-2">
+              {contact.social.instagram && (
+                <a
+                  href={contact.social.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-background text-muted-foreground transition-all duration-300 hover:border-accent/30 hover:text-accent-light"
+                >
+                  <Instagram size={15} />
+                </a>
+              )}
+              {contact.social.facebook && (
+                <a
+                  href={contact.social.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-background text-muted-foreground transition-all duration-300 hover:border-accent/30 hover:text-accent-light"
+                >
+                  <Facebook size={15} />
+                </a>
+              )}
+              {contact.social.twitter && (
+                <a
+                  href={contact.social.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Twitter / X"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-background text-muted-foreground transition-all duration-300 hover:border-accent/30 hover:text-accent-light"
+                >
+                  <Twitter size={15} />
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Explore column */}
+          <div>
+            <h4 className="mb-6 text-xs font-bold uppercase tracking-[0.25em] text-foreground">
+              Explore
+            </h4>
+            <ul className="space-y-3">
+              {navLinks.map((link) => (
+                <li key={link.label}>
+                  <button
+                    onClick={() => onPageChange(link.page)}
+                    className="text-sm text-muted-foreground transition-colors duration-200 hover:text-accent-light"
+                  >
+                    {link.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact column */}
+          <div>
+            <h4 className="mb-6 text-xs font-bold uppercase tracking-[0.25em] text-foreground">
+              Contact
+            </h4>
+            <ul className="space-y-4 text-sm text-muted-foreground">
+              <li className="flex items-start gap-2.5">
+                <MapPin size={14} className="mt-0.5 shrink-0 text-accent-light" />
+                <span className="leading-relaxed">
+                  {contact.address.street}, {contact.address.district},{" "}
+                  {contact.address.cityStateZip}
+                </span>
+              </li>
+              <li>
+                <a
+                  href={`tel:${contact.phone}`}
+                  className="flex items-center gap-2.5 transition-colors duration-200 hover:text-accent-light"
+                >
+                  <Phone size={14} className="shrink-0 text-accent-light" />
+                  {contact.phone}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="flex items-center gap-2.5 transition-colors duration-200 hover:text-accent-light"
+                >
+                  <Mail size={14} className="shrink-0 text-accent-light" />
+                  {contact.email}
+                </a>
+              </li>
+            </ul>
+          </div>
+
         </div>
       </div>
+
+      {/* ── Bottom bar ──────────────────────────────────────────────── */}
+      <div className="border-t border-border px-6 py-6 transition-colors duration-300">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            © {new Date().getFullYear()} {brand.name}. All Rights Reserved.
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-5">
+            {[
+              { label: "Privacy Policy", kind: "privacy" as LegalDocKind },
+              { label: "Terms & Conditions", kind: "terms" as LegalDocKind },
+              { label: "Cancellation Policy", kind: "cancellation" as LegalDocKind },
+            ].map(({ label, kind }) => (
+              <a
+                key={kind}
+                href={LEGAL_ROUTES[kind]}
+                onClick={(e) => { e.preventDefault(); onLegalNavigate(kind); }}
+                className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:text-accent-light"
+              >
+                {label}
+              </a>
+            ))}
+            {showAdminNavLink && (
+              <button
+                type="button"
+                onClick={onAdminClick}
+                className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:text-accent-light"
+              >
+                Admin
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
     </footer>
   );
 }

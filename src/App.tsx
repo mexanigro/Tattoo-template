@@ -199,7 +199,7 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-lg rounded-3xl border border-border bg-card/95 p-6 text-card-foreground shadow-elevated backdrop-blur-md transition-colors duration-300 md:p-10 dark:bg-card/90"
+              className="relative w-full max-w-2xl rounded-3xl border border-border bg-card/95 p-6 text-card-foreground shadow-elevated backdrop-blur-md transition-colors duration-300 md:p-8 dark:bg-card/90"
             >
               <BookingWizard onClose={() => setShowBooking(false)} />
             </motion.div>
@@ -224,12 +224,14 @@ export default function App() {
           <StaffProfilePage
             slug={staffSlug ?? ""}
             onBackHome={handleHomeFromStaffProfile}
+            onBookClick={handleBookNow}
           />
         </main>
         <Footer
           onAdminClick={() => setPage("admin")}
           onLegalNavigate={navigateToLegal}
           onPageChange={navigatePublic}
+          onBookClick={handleBookNow}
         />
         {shellCommon}
       </div>
@@ -249,6 +251,7 @@ export default function App() {
           onAdminClick={() => setPage("admin")}
           onLegalNavigate={navigateToLegal}
           onPageChange={navigatePublic}
+          onBookClick={handleBookNow}
         />
         {shellCommon}
       </div>
@@ -270,6 +273,7 @@ export default function App() {
           onAdminClick={() => setPage("admin")}
           onLegalNavigate={navigateToLegal}
           onPageChange={navigatePublic}
+          onBookClick={handleBookNow}
         />
         {shellCommon}
       </div>
@@ -313,6 +317,7 @@ export default function App() {
         onAdminClick={() => setPage("admin")}
         onLegalNavigate={navigateToLegal}
         onPageChange={navigatePublic}
+        onBookClick={handleBookNow}
       />
       {shellCommon}
     </div>

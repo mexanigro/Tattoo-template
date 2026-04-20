@@ -7,78 +7,132 @@ export function Location() {
   const { contact, sections } = siteConfig;
   const { location: sectionConfig } = sections;
 
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    `${contact.address.street}, ${contact.address.district}, ${contact.address.cityStateZip}`
+  )}`;
+
   return (
-    <section id="location" className="relative overflow-hidden bg-card px-6 py-24 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center lg:gap-20 lg:items-center">
-          <div className="space-y-12">
+    <section id="location" className="bg-card px-6 py-28 transition-colors duration-300">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-20">
+
+          {/* ── Left: info ──────────────────────────────────────────── */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="space-y-10"
+          >
             <div>
-              <h2 className="text-accent-light font-bold uppercase tracking-[0.3em] text-xs mb-4">{sectionConfig.title}</h2>
-              <h3 className="text-4xl font-black uppercase tracking-tighter text-card-foreground md:text-6xl lg:text-5xl">{sectionConfig.subtitle}</h3>
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent-light">
+                {sectionConfig.title}
+              </p>
+              <h2 className="text-4xl font-black uppercase tracking-tighter text-card-foreground md:text-6xl lg:text-5xl xl:text-6xl">
+                {sectionConfig.subtitle}
+              </h2>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-               <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-foreground font-bold uppercase text-xs tracking-widest mb-4">
-                     <MapPin className="text-accent-light" size={18} />
-                     <span>Address</span>
-                  </div>
-                  <p className="text-muted-foreground transition-colors duration-300 text-sm">
-                     {contact.address.street}<br />
-                     {contact.address.district}<br />
-                     {contact.address.cityStateZip}
-                  </p>
-                  <a 
-                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${contact.address.street}, ${contact.address.district}, ${contact.address.cityStateZip}`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-accent-light transition-colors hover:text-foreground"
-                  >
-                    <span>Open in Maps</span>
-                    <ExternalLink size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </a>
-               </div>
-
-               <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-foreground font-bold uppercase text-xs tracking-widest mb-4">
-                     <Phone className="text-accent-light" size={18} />
-                     <span>Contact</span>
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <a href={`tel:${contact.phone}`} className="text-muted-foreground text-sm transition-colors duration-300 hover:text-accent-light">
-                       Phone: {contact.phone}
-                    </a>
-                    <a href={`mailto:${contact.email}`} className="text-muted-foreground text-sm transition-colors duration-300 hover:text-accent-light">
-                       Email: {contact.email}
-                    </a>
-                  </div>
-               </div>
-            </div>
-
-          </div>
-
-          <div className="relative">
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="aspect-video overflow-hidden rounded-3xl border border-border grayscale transition-colors duration-300"
-            >
-              {/* This would be a Google Map in a real world app */}
-              <div className="absolute inset-0 flex items-center justify-center bg-muted p-12 text-center transition-colors duration-300">
-                 <div className="space-y-4">
-                    <MapPin size={48} className="text-accent-light mx-auto" />
-                    <p className="text-xl font-bold italic tracking-tight text-foreground">MAP REPRESENTATION</p>
-                    <p className="text-xs uppercase tracking-widest text-muted-foreground transition-colors duration-300">Integrating Google Maps API...</p>
-                 </div>
+            <div className="space-y-4">
+              {/* Address card */}
+              <div className="rounded-2xl border border-border bg-background p-6 transition-colors duration-300">
+                <div className="mb-4 flex items-center gap-2">
+                  <MapPin size={15} className="text-accent-light" />
+                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Address</span>
+                </div>
+                <p className="mb-4 text-sm leading-relaxed text-foreground">
+                  {contact.address.street}<br />
+                  {contact.address.district}<br />
+                  {contact.address.cityStateZip}
+                </p>
+                <a
+                  href={mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-accent-light transition-colors hover:text-foreground"
+                >
+                  <span>Open in Maps</span>
+                  <ExternalLink size={11} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </a>
               </div>
-              <img
-                src="https://images.unsplash.com/photo-1512690196236-724d90957dc3?auto=format&fit=crop&q=80&w=1000"
-                className="w-full h-full object-cover opacity-20"
-                alt="Map Background"
-              />
-            </motion.div>
-          </div>
+
+              {/* Phone & Email */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <a
+                  href={`tel:${contact.phone}`}
+                  className="group flex items-center gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-accent/30"
+                >
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent-light/10 text-accent-light">
+                    <Phone size={16} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Phone</p>
+                    <p className="text-sm font-bold text-foreground">{contact.phone}</p>
+                  </div>
+                </a>
+
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="group flex items-center gap-3 rounded-2xl border border-border bg-background p-5 transition-all duration-300 hover:border-accent/30"
+                >
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent-light/10 text-accent-light">
+                    <Mail size={16} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Email</p>
+                    <p className="truncate text-sm font-bold text-foreground">{contact.email}</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* ── Right: map placeholder ──────────────────────────────── */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="relative"
+          >
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group block overflow-hidden rounded-3xl border border-border shadow-elevated transition-all duration-300 hover:border-accent/30 hover:shadow-xl"
+            >
+              {/* Map placeholder with image */}
+              <div className="relative aspect-[4/3] bg-muted">
+                <img
+                  src="https://images.unsplash.com/photo-1512690196236-724d90957dc3?auto=format&fit=crop&q=80&w=1000"
+                  className="h-full w-full object-cover opacity-30 transition-opacity duration-500 group-hover:opacity-40"
+                  alt="Location"
+                  referrerPolicy="no-referrer"
+                />
+                {/* Pin overlay */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-light shadow-lg shadow-accent/30">
+                    <MapPin size={28} className="text-zinc-950" fill="currentColor" />
+                  </div>
+                  <div className="rounded-2xl border border-border bg-card/90 px-6 py-4 text-center shadow-lg backdrop-blur-sm">
+                    <p className="text-xs font-bold uppercase tracking-widest text-accent-light">
+                      {siteConfig.brand.name}
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-foreground">
+                      {contact.address.street}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {contact.address.cityStateZip}
+                    </p>
+                  </div>
+                  <span className="flex items-center gap-1.5 rounded-full bg-black/40 px-4 py-1.5 text-xs font-semibold text-white backdrop-blur-sm transition-all duration-300 group-hover:bg-accent-light group-hover:text-zinc-950">
+                    <ExternalLink size={11} />
+                    Open in Google Maps
+                  </span>
+                </div>
+              </div>
+            </a>
+          </motion.div>
+
         </div>
       </div>
     </section>
