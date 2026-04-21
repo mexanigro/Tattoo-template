@@ -3,13 +3,11 @@ import * as Icons from "lucide-react";
 import { motion } from "motion/react";
 import { siteConfig } from "../../config/site";
 
-export function SplashScreen({
-  onRequestClose,
-}: {
-  onRequestClose: () => void;
-}) {
+export function SplashScreen() {
   const { brand, hero, splash } = siteConfig;
-  const imageSrc = splash.image ?? hero.backgroundImage;
+  /** 4ª imagen del portfolio del preset (`gallery[3]`). */
+  const fourthPortfolio = siteConfig.gallery?.[3];
+  const imageSrc = splash.image ?? fourthPortfolio ?? hero.backgroundImage;
   const BrandIcon =
     (Icons as Record<string, React.ComponentType<{ size?: number; className?: string }>>)[
       brand.logoIconName || "Scissors"
@@ -28,13 +26,16 @@ export function SplashScreen({
       role="dialog"
       aria-modal="true"
       aria-label={`${brand.name} welcome`}
-      className="fixed inset-0 z-[260] flex cursor-pointer flex-col items-center justify-center bg-black"
+      className="fixed inset-0 z-[260] flex flex-col items-center justify-center bg-black will-change-transform"
       initial={{ opacity: 1 }}
       exit={{
         opacity: 0,
-        transition: { duration: 0.65, ease: [0.4, 0, 0.2, 1] },
+        scale: 1.03,
+        transition: {
+          duration: 1,
+          ease: [0.18, 0.82, 0.22, 1],
+        },
       }}
-      onClick={() => onRequestClose()}
     >
       {/* Brand image */}
       <div className="pointer-events-none absolute inset-0">
@@ -54,7 +55,7 @@ export function SplashScreen({
       <motion.div
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         className="relative z-10 flex max-w-lg flex-col items-center gap-8 px-8 text-center"
       >
         {brand.logo ? (
@@ -77,8 +78,6 @@ export function SplashScreen({
         <p className="text-sm font-medium uppercase tracking-[0.35em] text-white/75">
           {brand.tagline}
         </p>
-
-        <p className="text-xs text-white/45">Tap or wait to continue</p>
       </motion.div>
     </motion.div>
   );

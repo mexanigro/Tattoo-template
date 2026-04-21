@@ -133,9 +133,8 @@ export function Navbar({ onBookClick, onPageChange, currentPage }: {
             })}
           </div>
 
-          {/* ── Right actions ──────────────────────────────────────── */}
+          {/* ── Right actions (theme toggle solo en móvil) ─────────── */}
           <div className="hidden md:flex items-center gap-2.5">
-            <ThemeToggle />
             {siteConfig.features.showBooking && (
               <button
                 onClick={onBookClick}

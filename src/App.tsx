@@ -327,10 +327,7 @@ export default function App() {
         }}
       >
         {splashVisible && page === "landing" && (
-          <SplashScreen
-            key="splash"
-            onRequestClose={() => setSplashVisible(false)}
-          />
+          <SplashScreen key="splash" />
         )}
       </AnimatePresence>
 

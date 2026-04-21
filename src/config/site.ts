@@ -74,7 +74,7 @@ const BASE_CONFIG: BaseConfig = {
 
   splash: {
     enabled: true,
-    durationMs: 2800,
+    durationMs: 2100,
   },
 };
 
