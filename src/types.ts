@@ -320,6 +320,16 @@ export type SiteConfig = {
     contactInquiries: boolean;
   };
   adminEmail: string;
+  /**
+   * Pantalla inicial (logo + imagen de marca) antes del home.
+   * Contenido de marca sigue viniendo del preset; timings en la config base.
+   */
+  splash: {
+    enabled: boolean;
+    durationMs: number;
+    /** Si se define, sustituye a `hero.backgroundImage` en la intro. */
+    image?: string;
+  };
 };
 
 export type PaymentMode = 'none' | 'deposit' | 'full';

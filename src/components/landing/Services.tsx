@@ -14,7 +14,14 @@ import { siteConfig } from "../../config/site";
 // preserved across all niche clones.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function Services({ onBookClick }: { onBookClick: () => void }) {
+export function Services({
+  onBookClick,
+  overFixedBackdrop,
+}: {
+  onBookClick: () => void;
+  /** Legibilidad sobre la imagen fija compartida con el Hero. */
+  overFixedBackdrop?: boolean;
+}) {
   const { sections } = siteConfig;
   const { services: sectionConfig } = sections;
   const services = siteConfig.services;
@@ -24,7 +31,15 @@ export function Services({ onBookClick }: { onBookClick: () => void }) {
     services.length % 2 !== 0 && i === services.length - 1;
 
   return (
-    <section id="services" className="bg-background px-6 py-28 transition-colors duration-300">
+    <section
+      id="services"
+      className={cn(
+        "relative z-10 border-t border-border/25 px-6 py-28 transition-colors duration-300",
+        overFixedBackdrop
+          ? "bg-background/80 backdrop-blur-2xl"
+          : "bg-background"
+      )}
+    >
       <div className="mx-auto max-w-7xl">
 
         {/* ── Section header ──────────────────────────────────────── */}

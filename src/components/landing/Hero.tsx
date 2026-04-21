@@ -10,21 +10,30 @@ const STATS = [
   { icon: Clock,  value: "3",     label: "Master Artisans" },
 ];
 
-export function Hero({ onBookClick }: { onBookClick: () => void }) {
+export function Hero({
+  onBookClick,
+  omitBackground,
+}: {
+  onBookClick: () => void;
+  /** Cuando la imagen va en `LandingBackdrop` (fija bajo Hero + Servicios). */
+  omitBackground?: boolean;
+}) {
   const { hero } = siteConfig;
 
   return (
     <section className="relative flex min-h-screen items-end overflow-hidden pb-0">
 
-      {/* ── Background ─────────────────────────────────────────────── */}
+      {/* ── Background (opcional si va capa fija compartida en LandingBackdrop) ─ */}
       <div className="absolute inset-0 z-0">
-        <img
-          src={hero.backgroundImage}
-          className="absolute inset-0 h-full w-full object-cover"
-          alt={`${siteConfig.brand.name} studio atmosphere`}
-          loading="eager"
-          referrerPolicy="no-referrer"
-        />
+        {!omitBackground && (
+          <img
+            src={hero.backgroundImage}
+            className="absolute inset-0 h-full w-full object-cover"
+            alt={`${siteConfig.brand.name} studio atmosphere`}
+            loading="eager"
+            referrerPolicy="no-referrer"
+          />
+        )}
         {/* Cinematic vignette — heavier on sides and top */}
         <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-br from-black/60 via-black/30 to-black/60 dark:from-black/40 dark:via-black/15 dark:to-black/45" aria-hidden />
         {/* Bottom anchor — fades to background color so stats row merges */}

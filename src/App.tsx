@@ -9,6 +9,9 @@ import { Navbar } from "./components/layout/Navbar";
 import { Footer } from "./components/layout/Footer";
 import { Hero } from "./components/landing/Hero";
 import { Services } from "./components/landing/Services";
+import { LandingBackdrop } from "./components/landing/LandingBackdrop";
+import { SplashScreen } from "./components/landing/SplashScreen";
+import { splashSession } from "./lib/splash-session";
 import { Team } from "./components/landing/Team";
 import { WhyChooseUs } from "./components/landing/WhyChooseUs";
 import { Testimonials } from "./components/landing/Testimonials";
@@ -81,6 +84,22 @@ export default function App() {
   const [staffSlug, setStaffSlug] = React.useState<string | undefined>(
     initialRoute.page === "staff-profile" ? initialRoute.staffSlug : undefined,
   );
+
+  const [splashVisible, setSplashVisible] = React.useState(
+    () =>
+      initialRoute.page === "landing" &&
+      siteConfig.splash.enabled &&
+      !splashSession.introDismissedThisLoad,
+  );
+
+  React.useEffect(() => {
+    if (!splashVisible) return;
+    const id = window.setTimeout(
+      () => setSplashVisible(false),
+      siteConfig.splash.durationMs,
+    );
+    return () => window.clearTimeout(id);
+  }, [splashVisible]);
 
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -280,8 +299,41 @@ export default function App() {
     );
   }
 
+  const openingBackdropActive =
+    siteConfig.features.showHero || siteConfig.features.showServices;
+
+  const heroAndServices = (
+    <>
+      {siteConfig.features.showHero && (
+        <Hero
+          onBookClick={handleBookNow}
+          omitBackground={openingBackdropActive}
+        />
+      )}
+      {siteConfig.features.showServices && (
+        <Services
+          onBookClick={handleBookNow}
+          overFixedBackdrop={openingBackdropActive}
+        />
+      )}
+    </>
+  );
+
   return (
     <div className="min-h-screen bg-background font-sans text-foreground selection:bg-primary selection:text-primary-foreground transition-colors duration-300">
+      <AnimatePresence
+        onExitComplete={() => {
+          splashSession.introDismissedThisLoad = true;
+        }}
+      >
+        {splashVisible && page === "landing" && (
+          <SplashScreen
+            key="splash"
+            onRequestClose={() => setSplashVisible(false)}
+          />
+        )}
+      </AnimatePresence>
+
       <Navbar
         onBookClick={handleBookNow}
         onPageChange={navigatePublic}
@@ -289,9 +341,10 @@ export default function App() {
       />
 
       <main>
-        {siteConfig.features.showHero && <Hero onBookClick={handleBookNow} />}
-        {siteConfig.features.showServices && (
-          <Services onBookClick={handleBookNow} />
+        {openingBackdropActive ? (
+          <LandingBackdrop>{heroAndServices}</LandingBackdrop>
+        ) : (
+          heroAndServices
         )}
         {siteConfig.features.showWhyChooseUs && <WhyChooseUs />}
         {siteConfig.features.showTeam && (
