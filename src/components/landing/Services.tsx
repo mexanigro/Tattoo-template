@@ -1,241 +1,155 @@
-import React, { useRef, useState } from "react";
+import React from "react";
+import { Clock, ChevronRight, Calendar } from "lucide-react";
+import { motion } from "motion/react";
+import { cn } from "../../lib/utils";
+import { siteConfig } from "../../config/site";
 
-type MenuCategory = "todos" | "calientes" | "frios" | "postres";
+// ─── TEMPLATE LAYOUT RULE: Odd-count grid fill ────────────────────────────────
+// Services are rendered in a 2-column grid. When a niche preset defines an
+// odd number of services the last card would otherwise leave an empty cell at
+// the bottom-right. The helpers below detect this case and make the orphan card
+// span both columns, switching it to a horizontal (image-left / text-right)
+// layout so every row is fully occupied regardless of how many services the
+// preset defines. This logic is intentional, preset-agnostic, and must be
+// preserved across all niche clones.
+// ─────────────────────────────────────────────────────────────────────────────
 
-type MenuItem = {
-  id: number;
-  name: string;
-  category: Exclude<MenuCategory, "todos">;
-  price: string;
-  description: string;
-  color: string;
-};
+export function Services({ onBookClick }: { onBookClick: () => void }) {
+  const { sections } = siteConfig;
+  const { services: sectionConfig } = sections;
+  const services = siteConfig.services;
 
-const menuItems: MenuItem[] = [
-  {
-    id: 1,
-    name: "Espresso Clasico",
-    category: "calientes",
-    price: "$3.50",
-    description: "Intenso, cremoso y con cuerpo. El alma del cafe.",
-    color: "#3E2723",
-  },
-  {
-    id: 2,
-    name: "Cappuccino Soft",
-    category: "calientes",
-    price: "$4.20",
-    description: "Espuma de nube sobre espresso doble.",
-    color: "#6F4E37",
-  },
-  {
-    id: 3,
-    name: "Cold Brew",
-    category: "frios",
-    price: "$4.50",
-    description: "12 horas de extraccion fria. Suave y dulce.",
-    color: "#4E342E",
-  },
-  {
-    id: 4,
-    name: "Flat White",
-    category: "calientes",
-    price: "$4.00",
-    description: "Microespuma sedosa sobre doble ristretto.",
-    color: "#5D4037",
-  },
-  {
-    id: 5,
-    name: "Iced Latte",
-    category: "frios",
-    price: "$4.80",
-    description: "Hielo, leche cremosa y espresso balanceado.",
-    color: "#8D6E63",
-  },
-  {
-    id: 6,
-    name: "Tiramisu Casero",
-    category: "postres",
-    price: "$5.50",
-    description: "Capas de cafe, mascarpone y cacao.",
-    color: "#3E2723",
-  },
-  {
-    id: 7,
-    name: "Cheesecake de Caramelo",
-    category: "postres",
-    price: "$5.00",
-    description: "Base de galleta, queso y salsa de caramelo salado.",
-    color: "#6F4E37",
-  },
-  {
-    id: 8,
-    name: "Frappe Moka",
-    category: "frios",
-    price: "$5.20",
-    description: "Batido de cafe, chocolate y crema montada.",
-    color: "#4E342E",
-  },
-];
-
-const categories: { key: MenuCategory; label: string }[] = [
-  { key: "todos", label: "Todo" },
-  { key: "calientes", label: "Calientes" },
-  { key: "frios", label: "Frios" },
-  { key: "postres", label: "Postres" },
-];
-
-const MenuCard = ({ item }: { item: MenuItem }) => {
-  const cardRef = useRef<HTMLDivElement | null>(null);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = cardRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateX = (y - centerY) / 12;
-    const rotateY = (centerX - x) / 12;
-    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
-  };
-
-  const handleMouseLeave = () => {
-    if (cardRef.current) {
-      cardRef.current.style.transform = "perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)";
-    }
-  };
+  /** True for the last card when the total count is odd (grid orphan). */
+  const isOddOrphan = (i: number) =>
+    services.length % 2 !== 0 && i === services.length - 1;
 
   return (
-    <div
-      className="transition-all duration-500 ease-out"
-      style={{
-        opacity: 1,
-        transform: "translateY(0) scale(1)",
-      }}
-    >
-      <div
-        ref={cardRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        className="group relative h-full cursor-pointer overflow-hidden rounded-2xl border border-[#3E2723] bg-[#2C1810] p-6 transition-transform duration-200 ease-out will-change-transform md:p-8"
-        style={{ transformStyle: "preserve-3d" }}
-      >
-        <div
-          className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-          style={{ boxShadow: `0 0 40px ${item.color}20, inset 0 0 60px ${item.color}10` }}
-        />
-
-        <div
-          className="absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-10 blur-2xl transition-transform duration-500 group-hover:scale-150"
-          style={{ background: item.color }}
-        />
-
-        <div className="relative z-10">
-          <div className="mb-4 flex items-start justify-between">
-            <span className="rounded-full border border-[#3E2723] px-3 py-1 text-[10px] uppercase tracking-[3px] text-[#8D6E63]">
-              {item.category}
-            </span>
-            <span className="text-xl font-light text-[#D4A574]">{item.price}</span>
-          </div>
-
-          <h3 className="mb-3 text-2xl font-light leading-tight text-[#F5E6D3] md:text-3xl">
-            {item.name}
-          </h3>
-
-          <p className="text-sm leading-relaxed text-[#8D6E63] md:text-base">{item.description}</p>
-
-          <div className="mt-6 flex translate-y-2 items-center gap-2 text-xs uppercase tracking-[2px] text-[#D4A574] opacity-0 transition-opacity duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-            <span>Agregar al pedido</span>
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export function Services({ onBookClick: _onBookClick }: { onBookClick: () => void }) {
-  const [activeCategory, setActiveCategory] = useState<MenuCategory>("todos");
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  const filteredItems =
-    activeCategory === "todos"
-      ? menuItems
-      : menuItems.filter((item) => item.category === activeCategory);
-
-  const handleCategoryChange = (cat: MenuCategory) => {
-    if (cat === activeCategory) return;
-    setIsAnimating(true);
-    window.setTimeout(() => {
-      setActiveCategory(cat);
-      setIsAnimating(false);
-    }, 300);
-  };
-
-  return (
-    <section id="menu" className="relative overflow-hidden bg-[#F5E6D3] px-4 py-24 md:px-8 md:py-32">
-      <style>{`
-        @keyframes fadeInUpMenu {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .menu-item-enter {
-          animation: fadeInUpMenu 0.5s ease forwards;
-        }
-      `}</style>
-
+    <section id="services" className="bg-background px-6 py-28 transition-colors duration-300">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-16 text-center">
-          <p className="mb-4 text-xs uppercase tracking-[6px] text-[#6F4E37]">Nuestra Carta</p>
-          <h2 className="mb-6 text-4xl font-light text-[#2C1810] md:text-6xl">
-            Sabores que <span className="italic text-[#6F4E37]">perduran</span>
-          </h2>
-          <p className="mx-auto max-w-xl text-base text-[#6F4E37] md:text-lg">
-            Cada bebida es una ceremonia. Cada postre, un cierre perfecto.
-          </p>
-        </div>
 
-        <div className="mb-16 flex flex-wrap justify-center gap-3">
-          {categories.map((cat) => (
-            <button
-              key={cat.key}
-              onClick={() => handleCategoryChange(cat.key)}
-              className={`relative overflow-hidden rounded-full px-6 py-3 text-xs uppercase tracking-[3px] transition-all duration-300 ${
-                activeCategory === cat.key
-                  ? "bg-[#2C1810] text-[#F5E6D3]"
-                  : "border border-[#2C1810]/20 bg-transparent text-[#2C1810] hover:border-[#2C1810]/60"
-              }`}
+        {/* ── Section header ──────────────────────────────────────── */}
+        <div className="mb-20 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-accent-light"
             >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-
-        <div
-          className={`grid grid-cols-1 gap-6 transition-all duration-300 md:grid-cols-2 lg:grid-cols-4 ${
-            isAnimating ? "translate-y-4 opacity-0" : "translate-y-0 opacity-100"
-          }`}
-        >
-          {filteredItems.map((item, index) => (
-            <div
-              key={item.id}
-              className="menu-item-enter"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              {sectionConfig.title}
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl font-black uppercase tracking-wide text-foreground md:text-6xl"
             >
-              <MenuCard item={item} />
-            </div>
-          ))}
-        </div>
-
-        {filteredItems.length === 0 && (
-          <div className="py-20 text-center text-[#6F4E37]">
-            <p className="text-lg">No hay items en esta categoria.</p>
+              {sectionConfig.subtitle}
+            </motion.h2>
           </div>
-        )}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="shrink-0"
+          >
+            <p className="text-sm text-muted-foreground md:text-right">
+              {services.length} services available
+            </p>
+            <div className="mt-1 h-px w-32 bg-gradient-to-r from-accent-light/60 to-transparent md:ml-auto" />
+          </motion.div>
+        </div>
+
+        {/* ── Cards grid ──────────────────────────────────────────── */}
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          {services.map((service, index) => (
+            <motion.div
+              key={service.id}
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.08, duration: 0.5 }}
+              className={cn(
+                "group relative flex flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-elevated transition-all duration-300",
+                "hover:-translate-y-1.5 hover:border-accent/30 hover:shadow-xl dark:hover:border-accent/20",
+                siteConfig.features.showBooking && "cursor-pointer",
+                isOddOrphan(index) && "md:col-span-2 md:flex-row"
+              )}
+              onClick={siteConfig.features.showBooking ? onBookClick : undefined}
+            >
+              {/* Image */}
+              <div className={cn(
+                "relative overflow-hidden",
+                isOddOrphan(index)
+                  ? "aspect-[16/9] md:aspect-auto md:w-1/2"
+                  : "aspect-[16/9]"
+              )}>
+                <img
+                  src={sectionConfig.images[index % sectionConfig.images.length]}
+                  alt={service.name}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                />
+                {/* Overlay gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent" />
+
+                {/* Service index number */}
+                <div className="absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm">
+                  <span className="font-gothic text-base text-white/80">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                </div>
+
+                {/* Price badge — floats over image bottom-right */}
+                <div className="absolute bottom-4 right-4 flex items-baseline gap-1 bg-black/55 px-3 py-1.5 backdrop-blur-md">
+                  {service.price === 0 ? (
+                    <span className="font-serif text-xl font-bold uppercase tracking-widest text-accent-light">Free</span>
+                  ) : (
+                    <>
+                      <span className="text-xs font-semibold text-white/60">from</span>
+                      <span className="font-serif text-xl font-bold text-accent-light">${service.price}</span>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className={cn(
+                "flex flex-col justify-between p-7",
+                isOddOrphan(index) && "md:w-1/2"
+              )}>
+                <div>
+                  <h3 className="mb-3 text-xl font-black tracking-tight text-card-foreground transition-colors duration-200 group-hover:text-accent-light">
+                    {service.name}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {service.description}
+                  </p>
+                </div>
+
+                {/* Footer row */}
+                <div className="mt-6 flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                    <Clock size={13} />
+                    <span>{service.duration} min</span>
+                  </div>
+
+                  {siteConfig.features.showBooking && (
+                    <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-accent-light opacity-0 transition-all duration-300 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0">
+                      <Calendar size={13} />
+                      <span>Book</span>
+                      <ChevronRight size={13} />
+                    </div>
+                  )}
+                </div>
+
+                {/* Bottom accent line */}
+                <div className="mt-5 h-px w-0 bg-gradient-to-r from-accent-light to-transparent transition-all duration-500 group-hover:w-full" />
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

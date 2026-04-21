@@ -9,6 +9,13 @@ import { Navbar } from "./components/layout/Navbar";
 import { Footer } from "./components/layout/Footer";
 import { Hero } from "./components/landing/Hero";
 import { Services } from "./components/landing/Services";
+import { Team } from "./components/landing/Team";
+import { WhyChooseUs } from "./components/landing/WhyChooseUs";
+import { Testimonials } from "./components/landing/Testimonials";
+import { Location } from "./components/landing/Location";
+import { BusinessHours } from "./components/landing/BusinessHours";
+import { Gallery } from "./components/landing/Gallery";
+import { QuickInquiry } from "./components/landing/QuickInquiry";
 import { ScrollToTop } from "./components/layout/ScrollToTop";
 
 import { BookingWizard } from "./components/booking/BookingWizard";
@@ -281,9 +288,29 @@ export default function App() {
         currentPage={page}
       />
 
-      <main className="overflow-x-hidden">
+      <main>
         {siteConfig.features.showHero && <Hero onBookClick={handleBookNow} />}
-        {siteConfig.features.showServices && <Services onBookClick={handleBookNow} />}
+        {siteConfig.features.showServices && (
+          <Services onBookClick={handleBookNow} />
+        )}
+        {siteConfig.features.showWhyChooseUs && <WhyChooseUs />}
+        {siteConfig.features.showTeam && (
+          <Team
+            onBookClick={handleBookNow}
+            onNavigateToStaffProfile={
+              siteConfig.features.enableStaffPages
+                ? navigateToStaffProfile
+                : undefined
+            }
+          />
+        )}
+        {siteConfig.features.showGallery && (
+          <Gallery onViewFull={() => navigatePublic("gallery")} />
+        )}
+        {siteConfig.features.showTestimonials && <Testimonials />}
+        {siteConfig.features.showInquiry && <QuickInquiry />}
+        {siteConfig.features.showLocation && <BusinessHours />}
+        {siteConfig.features.showLocation && <Location />}
       </main>
 
       <Footer
