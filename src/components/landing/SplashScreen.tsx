@@ -27,13 +27,12 @@ export function SplashScreen() {
       aria-modal="true"
       aria-label={`${brand.name} welcome`}
       className="fixed inset-0 z-[260] flex flex-col items-center justify-center bg-black will-change-transform"
-      initial={{ opacity: 1 }}
+      initial={{ y: 0 }}
       exit={{
-        opacity: 0,
-        scale: 1.03,
+        y: "-100%",
         transition: {
-          duration: 1,
-          ease: [0.18, 0.82, 0.22, 1],
+          duration: 0.5,
+          ease: [0.22, 1, 0.36, 1],
         },
       }}
     >
